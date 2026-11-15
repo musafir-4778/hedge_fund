@@ -1,0 +1,91 @@
+================================================================================
+  AUTONOMOUS WEALTH MANAGEMENT OFFICE — 10-AGENT COMMITTEE DEBATE
+  MONTH 02/12 | DATE: 2024-11-01
+  Universe: 10 Liquid Indian Equities | Max 3 Holdings | Zero Lookahead Bias
+================================================================================
+
+━
+  📅 MONTH 2/14 — COMMITTEE SESSION DATE: 2024-11-01
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+📊 Benchmark Point-in-Time Metrics (2024-11-01): Nifty 50: ₹24,304.35 | 50 SMA:
+₹25,093.29 | 200 SMA: ₹23,440.75 | 63d Trend: +1.0% | VIX: 15.5
+Current Portfolio NAV: ₹1,005,159.59 (Cash: ₹100,000.00 | Liquid Fund: 
+₹905,159.59 | Holdings: 0/3)
+       Point-In-Time Screening of 10 Indian Equities (As of 2024-11-01)        
+┌─────────┬─────────┬─────────┬─────────┬────────┬─────────┬────────┬─────────┐
+│         │         │   Close │         │    RSI │     Vol │ 63d RS │    Rank │
+│ Ticker  │ Sector  │     (₹) │ Stage-… │   (14) │   Ratio │  Alpha │   Score │
+├─────────┼─────────┼─────────┼─────────┼────────┼─────────┼────────┼─────────┤
+│ TRENT.… │ Consum… │ ₹7,134… │   NO    │   38.4 │   0.11x │ +32.7% │    1.63 │
+│         │ Retail  │         │         │        │         │        │         │
+│ BEL.NS  │ Aerosp… │ ₹284.80 │   YES   │   55.3 │   0.28x │  -1.3% │    2.93 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Defense │         │         │        │         │        │         │
+│ ADANIP… │ Infras… │ ₹1,381… │   NO    │   49.6 │   0.13x │  -7.7% │   -1.38 │
+│         │ / Ports │         │         │        │         │        │         │
+│ RELIAN… │ Energy  │ ₹1,327… │   NO    │   36.5 │   0.14x │  -8.2% │   -1.41 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Petroc… │         │         │        │         │        │         │
+│ SUNPHA… │ Pharma… │ ₹1,824… │   NO    │   46.7 │   0.07x │  +7.0% │    0.35 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Health… │         │         │        │         │        │         │
+│ INFY.NS │ Inform… │ ₹1,636… │   NO    │   32.3 │   0.07x │  +0.6% │   -0.97 │
+│         │ Techno… │         │         │        │         │        │         │
+│ HDFCBA… │ Banking │ ₹843.12 │   YES   │   56.6 │   0.06x │  +6.5% │    3.32 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ ICICIB… │ Banking │ ₹1,271… │   YES   │   55.9 │   0.08x │ +10.1% │    3.50 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ LT.NS   │ Engine… │ ₹3,558… │   YES   │   57.8 │   0.09x │  +1.8% │    3.09 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Constr… │         │         │        │         │        │         │
+│ BAJFIN… │ Non-Ba… │ ₹683.91 │   NO    │   43.3 │   0.04x │  +3.9% │   -0.80 │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ (NBFC)  │         │         │        │         │        │         │
+└─────────┴─────────┴─────────┴─────────┴────────┴─────────┴────────┴─────────┘
+┌──────────── 🧠 Active Institutional Memory (Learned Guardrails) ────────────┐
+│   1. If the benchmark index closes below its 200-day moving average, all    │
+│ new long positions must be restricted to a maximum of 50% of standard       │
+│ position sizing to account for systemic liquidity risk.                     │
+│   2. If the benchmark index closes below its 200-day moving average, all    │
+│ long positions must be liquidated regardless of individual relative         │
+│ strength alpha.                                                             │
+│   3. For all high-beta sector-specific positions, the stop-loss must be     │
+│ dynamically adjusted to a trailing 1.5x ATR buffer if the sector index      │
+│ closes below its 50-day moving average, regardless of the individual        │
+│ stock's relative strength.                                                  │
+│   4. For all high-beta positional entries, the stop-loss must be strictly   │
+│ calculated as (2.0 + 0.5 * max(0, beta - 1.0)) * ATR14, and the position    │
+│ must be automatically liquidated if the price fails to maintain a close     │
+│ above the breakout level for three consecutive sessions.                    │
+│   5. For all high-beta positional trades, the stop-loss must be dynamically │
+│ calculated as (2.0 + 0.5 * max(0, beta - 1.0)) * ATR14 to account for       │
+│ idiosyncratic volatility risk.                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+Portfolio has 3 open slot(s). Evaluating top candidates from docket...
+  • Skipping ICICIBANK.NS: Volume ratio 0.08x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping HDFCBANK.NS: Volume ratio 0.06x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping LT.NS: Volume ratio 0.09x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping BEL.NS: Volume ratio 0.28x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping TRENT.NS: Volume ratio 0.11x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping SUNPHARMA.NS: Volume ratio 0.07x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping BAJFINANCE.NS: Volume ratio 0.04x < 0.90x (Vetoed by False 
+Breakout Rule)
+  • Skipping INFY.NS: Volume ratio 0.07x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping ADANIPORTS.NS: Volume ratio 0.13x < 0.90x (Vetoed by False 
+Breakout Rule)
+  • Skipping RELIANCE.NS: Volume ratio 0.14x < 0.90x (Vetoed by False Breakout 
+Rule)
+🏦 Treasury Liquid Sweep: Parked ₹910,348.76 in 6.75% Liquid Mutual Fund. 
+Accrued +₹5,189.17 risk-free yield over 31 days.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

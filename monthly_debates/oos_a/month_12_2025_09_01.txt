@@ -1,0 +1,88 @@
+================================================================================
+  AUTONOMOUS WEALTH MANAGEMENT OFFICE — 10-AGENT COMMITTEE DEBATE
+  MONTH 12/12 | DATE: 2025-09-01
+  Universe: 10 Liquid Indian Equities | Max 3 Holdings | Zero Lookahead Bias
+================================================================================
+
+━
+  📅 MONTH 12/14 — COMMITTEE SESSION DATE: 2025-09-01
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+📊 Benchmark Point-in-Time Metrics (2025-09-01): Nifty 50: ₹24,625.05 | 50 SMA:
+₹24,995.18 | 200 SMA: ₹24,074.09 | 63d Trend: +0.3% | VIX: 15.5
+Current Portfolio NAV: ₹1,049,422.47 (Cash: ₹104,403.57 | Liquid Fund: 
+₹945,018.91 | Holdings: 0/3)
+       Point-In-Time Screening of 10 Indian Equities (As of 2025-09-01)        
+┌─────────┬─────────┬─────────┬─────────┬────────┬─────────┬────────┬─────────┐
+│         │         │   Close │         │    RSI │     Vol │ 63d RS │    Rank │
+│ Ticker  │ Sector  │     (₹) │ Stage-… │   (14) │   Ratio │  Alpha │   Score │
+├─────────┼─────────┼─────────┼─────────┼────────┼─────────┼────────┼─────────┤
+│ TRENT.… │ Consum… │ ₹5,441… │   NO    │   54.3 │   0.66x │  -2.8% │    0.86 │
+│         │ Retail  │         │         │        │         │        │         │
+│ BEL.NS  │ Aerosp… │ ₹371.81 │   NO    │   42.9 │   0.74x │  -3.2% │   -1.16 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Defense │         │         │        │         │        │         │
+│ ADANIP… │ Infras… │ ₹1,329… │   NO    │   45.1 │   0.45x │  -6.7% │   -1.33 │
+│         │ / Ports │         │         │        │         │        │         │
+│ RELIAN… │ Energy  │ ₹1,347… │   NO    │   36.4 │   1.12x │  -3.6% │   -1.18 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Petroc… │         │         │        │         │        │         │
+│ SUNPHA… │ Pharma… │ ₹1,549… │   NO    │   33.5 │   3.07x │  -6.3% │   -0.31 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Health… │         │         │        │         │        │         │
+│ INFY.NS │ Inform… │ ₹1,413… │   NO    │   50.7 │   0.52x │  -3.2% │   -0.16 │
+│         │ Techno… │         │         │        │         │        │         │
+│ HDFCBA… │ Banking │ ₹935.13 │   NO    │   30.2 │   1.29x │  -0.2% │   -1.01 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ ICICIB… │ Banking │ ₹1,399… │   NO    │   41.7 │   0.65x │  -1.5% │   -1.07 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ LT.NS   │ Engine… │ ₹3,563… │   NO    │   50.3 │   0.77x │  -1.6% │   -0.08 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Constr… │         │         │        │         │        │         │
+│ BAJFIN… │ Non-Ba… │ ₹883.92 │   NO    │   49.0 │   0.64x │  -1.3% │   -1.06 │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ (NBFC)  │         │         │        │         │        │         │
+└─────────┴─────────┴─────────┴─────────┴────────┴─────────┴────────┴─────────┘
+┌──────────── 🧠 Active Institutional Memory (Learned Guardrails) ────────────┐
+│   1. For all momentum-based entries, mandate a minimum 1.2x 20-day volume   │
+│ ratio confirmation on the breakout day and prohibit new long positions if   │
+│ the price is greater than 1.20 times the 50-day moving average.             │
+│   2. If the benchmark index closes below its 200-day moving average, all    │
+│ new long positions must be restricted to a maximum of 50% of standard       │
+│ position sizing to account for systemic liquidity risk.                     │
+│   3. If the benchmark index closes below its 200-day moving average, all    │
+│ long positions must be liquidated regardless of individual relative         │
+│ strength alpha.                                                             │
+│   4. For all high-beta sector-specific positions, the stop-loss must be     │
+│ dynamically adjusted to a trailing 1.5x ATR buffer if the sector index      │
+│ closes below its 50-day moving average, regardless of the individual        │
+│ stock's relative strength.                                                  │
+│   5. For all high-beta positional entries, the stop-loss must be strictly   │
+│ calculated as (2.0 + 0.5 * max(0, beta - 1.0)) * ATR14, and the position    │
+│ must be automatically liquidated if the price fails to maintain a close     │
+│ above the breakout level for three consecutive sessions.                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+Portfolio has 3 open slot(s). Evaluating top candidates from docket...
+  • Skipping TRENT.NS: Volume ratio 0.66x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping LT.NS: Volume ratio 0.77x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping INFY.NS: Volume ratio 0.52x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping SUNPHARMA.NS: Negative RS Alpha (-6.3%) during benchmark downtrend
+  • Skipping HDFCBANK.NS: Negative RS Alpha (-0.2%) during benchmark downtrend
+  • Skipping BAJFINANCE.NS: Volume ratio 0.64x < 0.90x (Vetoed by False 
+Breakout Rule)
+  • Skipping ICICIBANK.NS: Volume ratio 0.65x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping BEL.NS: Volume ratio 0.74x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping RELIANCE.NS: Negative RS Alpha (-3.6%) during benchmark downtrend
+  • Skipping ADANIPORTS.NS: Volume ratio 0.45x < 0.90x (Vetoed by False 
+Breakout Rule)
+🏦 Treasury Liquid Sweep: Parked ₹950,261.82 in 6.75% Liquid Mutual Fund. 
+Accrued +₹5,242.91 risk-free yield over 30 days.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

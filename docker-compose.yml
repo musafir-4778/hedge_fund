@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  wealth-agent-daemon:
+    build: .
+    container_name: indian_wealth_agent
+    restart: unless-stopped
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - TZ=Asia/Kolkata
+    volumes:
+      # Mount local db file so trade persistence and episodic memory persist across rebuilds
+      - ./paper_portfolio_india.db:/app/paper_portfolio_india.db
+      - ./logs:/app/logs
+

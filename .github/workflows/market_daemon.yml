@@ -1,0 +1,85 @@
+name: Autonomous Indian Wealth Management Runner
+
+on:
+  schedule:
+    # 03:30 UTC = 09:00 AM IST (Monday to Friday) - Morning Discovery & Committee
+    - cron: '30 3 * * 1-5'
+    # 09:45 UTC = 03:15 PM IST (Monday to Friday) - Pre-Close Trailing Stop & EOD Close
+    - cron: '45 9 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      job_type:
+        description: 'Job execution type'
+        required: true
+        default: 'morning'
+        type: choice
+        options:
+          - morning
+          - close
+          - report
+          - check_stops
+
+permissions:
+  contents: write
+
+jobs:
+  run-market-cycle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Autonomous Market Cycle
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          # Determine execution path based on trigger or manual input
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.event.inputs.job_type }}" = "morning" ]; then
+              python daemon.py --morning-run
+            elif [ "${{ github.event.inputs.job_type }}" = "close" ]; then
+              python daemon.py --close-run
+            elif [ "${{ github.event.inputs.job_type }}" = "report" ]; then
+              python daemon.py --report
+            elif [ "${{ github.event.inputs.job_type }}" = "check_stops" ]; then
+              python daemon.py --check-stops
+            fi
+          else
+            # Determine whether morning or afternoon based on current UTC hour
+            UTC_HOUR=$(date -u +%H)
+            if [ "$UTC_HOUR" -lt 6 ]; then
+              echo "=== Executing Morning Market Cycle (09:00 AM IST) ==="
+              python daemon.py --morning-run
+            else
+              echo "=== Executing Market Close Cycle (03:15 PM IST) ==="
+              python daemon.py --close-run
+            fi
+          fi
+
+      - name: Commit & Push Updated SQLite Database & Logs
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action [Wealth Agent]"
+          git add paper_portfolio_india.db* || true
+          if git diff --staged --quiet; then
+            echo "No database changes to commit."
+          else
+            git commit -m "Auto-sync portfolio state & episodic memory [skip ci]"
+            git push
+          fi
+

@@ -1,0 +1,86 @@
+================================================================================
+  AUTONOMOUS WEALTH MANAGEMENT OFFICE — 10-AGENT COMMITTEE DEBATE
+  MONTH 15/12 | DATE: 2023-01-02
+  Universe: 10 Liquid Indian Equities | Max 3 Holdings | Zero Lookahead Bias
+================================================================================
+
+━
+  📅 MONTH 15/17 — COMMITTEE SESSION DATE: 2023-01-02
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+📊 Benchmark Point-in-Time Metrics (2023-01-02): Nifty 50: ₹18,197.45 | 50 SMA:
+₹18,274.13 | 200 SMA: ₹17,237.33 | 63d Trend: +7.8% | VIX: 15.5
+Current Portfolio NAV: ₹1,082,570.47 (Cash: ₹103,933.94 | Liquid Fund: 
+₹978,636.53 | Holdings: 0/3)
+       Point-In-Time Screening of 10 Indian Equities (As of 2023-01-02)        
+┌─────────┬─────────┬─────────┬─────────┬────────┬─────────┬────────┬─────────┐
+│         │         │   Close │         │    RSI │     Vol │ 63d RS │    Rank │
+│ Ticker  │ Sector  │     (₹) │ Stage-… │   (14) │   Ratio │  Alpha │   Score │
+├─────────┼─────────┼─────────┼─────────┼────────┼─────────┼────────┼─────────┤
+│ TRENT.… │ Consum… │ ₹1,337… │   NO    │   38.2 │   0.39x │ -11.2% │   -0.56 │
+│         │ Retail  │         │         │        │         │        │         │
+│ BEL.NS  │ Aerosp… │  ₹96.23 │   NO    │   44.1 │   0.50x │  -5.9% │   -1.30 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Defense │         │         │        │         │        │         │
+│ ADANIP… │ Infras… │ ₹805.98 │   NO    │   40.7 │   0.43x │  -2.9% │   -1.15 │
+│         │ / Ports │         │         │        │         │        │         │
+│ RELIAN… │ Energy  │ ₹1,170… │   NO    │   48.9 │   0.64x │  +0.9% │   -0.95 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Petroc… │         │         │        │         │        │         │
+│ SUNPHA… │ Pharma… │ ₹959.59 │   NO    │   46.0 │   0.61x │  -2.2% │   -0.11 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Health… │         │         │        │         │        │         │
+│ INFY.NS │ Inform… │ ₹1,337… │   NO    │   45.7 │   0.64x │  +2.8% │   -0.86 │
+│         │ Techno… │         │         │        │         │        │         │
+│ HDFCBA… │ Banking │ ₹770.93 │   YES   │   54.4 │   0.39x │  +7.5% │    3.37 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ ICICIB… │ Banking │ ₹873.29 │   NO    │   47.4 │   0.44x │  -1.4% │   -1.07 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ LT.NS   │ Engine… │ ₹2,011… │   YES   │   47.2 │   0.45x │  +7.1% │    2.35 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Constr… │         │         │        │         │        │         │
+│ BAJFIN… │ Non-Ba… │ ₹641.42 │   NO    │   45.2 │   0.68x │ -16.4% │   -1.82 │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ (NBFC)  │         │         │        │         │        │         │
+└─────────┴─────────┴─────────┴─────────┴────────┴─────────┴────────┴─────────┘
+┌──────────── 🧠 Active Institutional Memory (Learned Guardrails) ────────────┐
+│   1. For positional trades initiated during a macro risk-off benchmark      │
+│ correction, enforce that price must remain within 1.20 times the 50-day     │
+│ moving average to avoid multi-year holding drag.                            │
+│   2. Mandate that no positional entry is permitted unless the asset         │
+│ satisfies the full Minervini Stage-2 trend alignment (Price > SMA50 >       │
+│ SMA150 > SMA200) regardless of fundamental cash flow quality.               │
+│   3. Mandate CFO/PAT > 0.8; downgrade to HOLD if CFO < 0.                   │
+│   4. In confirmed Stage-2 bull regimes, maintain trailing stops on          │
+│ MOCK_STOCK.NS breakouts.                                                    │
+│   5. Enforce a strict quantitative volume threshold requiring a 20-day      │
+│ volume ratio >= 1.1x prior to validating any breakout entries near          │
+│ multi-month highs.                                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+Portfolio has 3 open slot(s). Evaluating top candidates from docket...
+  • Skipping HDFCBANK.NS: Volume ratio 0.39x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping LT.NS: Volume ratio 0.45x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping SUNPHARMA.NS: Volume ratio 0.61x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping TRENT.NS: Volume ratio 0.39x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping INFY.NS: Volume ratio 0.64x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping RELIANCE.NS: Volume ratio 0.64x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping ICICIBANK.NS: Volume ratio 0.44x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping ADANIPORTS.NS: Volume ratio 0.43x < 0.90x (Vetoed by False 
+Breakout Rule)
+  • Skipping BEL.NS: Volume ratio 0.50x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping BAJFINANCE.NS: Volume ratio 0.68x < 0.90x (Vetoed by False 
+Breakout Rule)
+🏦 Treasury Liquid Sweep: Parked ₹984,065.95 in 6.75% Liquid Mutual Fund. 
+Accrued +₹5,429.42 risk-free yield over 30 days.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

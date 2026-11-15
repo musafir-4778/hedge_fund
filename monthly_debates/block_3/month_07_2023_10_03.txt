@@ -1,0 +1,112 @@
+================================================================================
+  AUTONOMOUS WEALTH MANAGEMENT OFFICE — 10-AGENT COMMITTEE DEBATE
+  MONTH 07/12 | DATE: 2023-10-03
+  Universe: 10 Liquid Indian Equities | Max 3 Holdings | Zero Lookahead Bias
+================================================================================
+
+━
+  📅 MONTH 7/17 — COMMITTEE SESSION DATE: 2023-10-03
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+📊 Benchmark Point-in-Time Metrics (2023-10-03): Nifty 50: ₹19,528.75 | 50 SMA:
+₹19,616.56 | 200 SMA: ₹18,503.10 | 63d Trend: +0.7% | VIX: 15.5
+📈 Trailed Stop for ADANIPORTS.NS: ₹714.42 -> ₹781.76 (Locking in gains @ CMP 
+₹820.38)
+Current Portfolio NAV: ₹1,040,202.68 (Cash: ₹0.00 | Liquid Fund: ₹666,934.61 | 
+Holdings: 3/3)
+                    Existing Open Holdings & Tax Lot Status                    
+┌────────┬─────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┐
+│        │     │  Entry │    CMP │ Active │        │ Unrea… │ Holdi… │ Tax    │
+│ Ticker │ Qty │  Price │ (Toda… │   Stop │ Target │    PnL │ Period │ Status │
+├────────┼─────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+│ BEL.NS │ 922 │ ₹134.… │ ₹135.… │ ₹127.… │ ₹153.… │ +0.98% │   32   │ STCG   │
+│        │     │        │        │        │        │        │  days  │ (20%)  │
+│ ADANI… │ 157 │ ₹788.… │ ₹820.… │ ₹781.… │ ₹975.… │ +3.99% │   32   │ STCG   │
+│        │     │        │        │        │        │        │  days  │ (20%)  │
+│ RELIA… │ 104 │ ₹1,19… │ ₹1,14… │ ₹1,12… │ ₹1,35… │ -3.92% │   32   │ STCG   │
+│        │     │        │        │        │        │        │  days  │ (20%)  │
+└────────┴─────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
+       Point-In-Time Screening of 10 Indian Equities (As of 2023-10-03)        
+┌─────────┬─────────┬─────────┬─────────┬────────┬─────────┬────────┬─────────┐
+│         │         │   Close │         │    RSI │     Vol │ 63d RS │    Rank │
+│ Ticker  │ Sector  │     (₹) │ Stage-… │   (14) │   Ratio │  Alpha │   Score │
+├─────────┼─────────┼─────────┼─────────┼────────┼─────────┼────────┼─────────┤
+│ TRENT.… │ Consum… │ ₹2,053… │   YES   │   52.4 │   0.72x │ +17.9% │    4.89 │
+│         │ Retail  │         │         │        │         │        │         │
+│ SUNPHA… │ Pharma… │ ₹1,110… │   YES   │   52.9 │   0.94x │  +8.5% │    4.42 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Health… │         │         │        │         │        │         │
+│ INFY.NS │ Inform… │ ₹1,275… │   NO    │   42.2 │   0.82x │  +5.9% │   -0.71 │
+│         │ Techno… │         │         │        │         │        │         │
+│ HDFCBA… │ Banking │ ₹722.00 │   NO    │   29.8 │   0.76x │ -13.5% │   -1.67 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ ICICIB… │ Banking │ ₹917.40 │   NO    │   37.6 │   0.70x │  -0.4% │   -1.02 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ LT.NS   │ Engine… │ ₹2,991… │   YES   │   79.3 │   1.33x │ +25.5% │    3.28 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Constr… │         │         │        │         │        │         │
+│ BAJFIN… │ Non-Ba… │ ₹783.10 │   YES   │   72.8 │   1.15x │  +0.6% │    2.03 │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ (NBFC)  │         │         │        │         │        │         │
+└─────────┴─────────┴─────────┴─────────┴────────┴─────────┴────────┴─────────┘
+┌──────────── 🧠 Active Institutional Memory (Learned Guardrails) ────────────┐
+│   1. Mandate a minimum 20-day volume ratio of 1.1x for all breakout entries │
+│ to ensure institutional participation and prevent entry into low-conviction │
+│ price extensions.                                                           │
+│   2. Mandate CFO/PAT > 0.8; downgrade to HOLD if CFO < 0.                   │
+│   3. In confirmed Stage-2 bull regimes, maintain trailing stops on          │
+│ MOCK_STOCK.NS breakouts.                                                    │
+│   4. For all banking sector allocations, the fundamental desk must          │
+│ normalize cash flow metrics by excluding net loan book growth from          │
+│ operating outflows before assigning a conviction score.                     │
+│   5. For positional trades initiated during a macro risk-off benchmark      │
+│ correction, enforce that price must remain within 1.20 times the 50-day     │
+│ moving average to avoid multi-year holding drag.                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+Portfolio is at full capacity (3/3 positions). No new buys evaluated this 
+month.
+
+▼ STOP-LOSS TRIGGERED: BEL.NS exited @ ₹127.12 on 2023-10-25 (Held: 54d | Tax: 
+₹0.00 STCG | Net PnL: -5.89%)
+┌──────────────────── 🧠 POST-MORTEM REFLECTION COMPLETE ─────────────────────┐
+│ New Guardrail Rule Formulated by Post-Mortem Auditor:                       │
+│ "For all momentum-based entries, the stop-loss must be set at a minimum of  │
+│ 2.5 times the 14-day ATR to account for sector-specific volatility and      │
+│ prevent premature liquidation during standard consolidation phases."        │
+│                                                                             │
+│ • Failing Agent: TECHNICAL                                                  │
+│ • Accurate Agent: BULL_BEAR_DEBATE                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+▼ STOP-LOSS TRIGGERED: ADANIPORTS.NS exited @ ₹779.58 on 2023-10-09 (Held: 38d 
+| Tax: ₹0.00 STCG | Net PnL: -1.50%)
+┌──────────────────── 🧠 POST-MORTEM REFLECTION COMPLETE ─────────────────────┐
+│ New Guardrail Rule Formulated by Post-Mortem Auditor:                       │
+│ "For all breakout entries, the position must be liquidated if the price     │
+│ fails to maintain a close above the breakout level for three consecutive    │
+│ sessions, regardless of the initial stop-loss distance."                    │
+│                                                                             │
+│ • Failing Agent: TECHNICAL                                                  │
+│ • Accurate Agent: RISK_COMMITTEE                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+▼ STOP-LOSS TRIGGERED: RELIANCE.NS exited @ ₹1,118.12 on 2023-10-23 (Held: 52d 
+| Tax: ₹0.00 STCG | Net PnL: -6.50%)
+┌──────────────────── 🧠 POST-MORTEM REFLECTION COMPLETE ─────────────────────┐
+│ New Guardrail Rule Formulated by Post-Mortem Auditor:                       │
+│ "Mandate that no position shall be initiated unless the asset satisfies the │
+│ Minervini Stage-2 trend alignment criteria (Price > SMA50 > SMA150 >        │
+│ SMA200) regardless of how attractive the fundamental cash conversion or     │
+│ valuation metrics appear."                                                  │
+│                                                                             │
+│ • Failing Agent: FUNDAMENTAL                                                │
+│ • Accurate Agent: TECHNICAL                                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+🏦 Treasury Liquid Sweep: Parked ₹924,978.57 in 6.75% Liquid Mutual Fund. 
+Accrued +₹4,934.21 risk-free yield over 29 days.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

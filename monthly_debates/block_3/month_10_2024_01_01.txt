@@ -1,0 +1,97 @@
+================================================================================
+  AUTONOMOUS WEALTH MANAGEMENT OFFICE — 10-AGENT COMMITTEE DEBATE
+  MONTH 10/12 | DATE: 2024-01-01
+  Universe: 10 Liquid Indian Equities | Max 3 Holdings | Zero Lookahead Bias
+================================================================================
+
+━
+  📅 MONTH 10/17 — COMMITTEE SESSION DATE: 2024-01-01
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+📊 Benchmark Point-in-Time Metrics (2024-01-01): Nifty 50: ₹21,741.90 | 50 SMA:
+₹20,209.72 | 200 SMA: ₹19,162.13 | 63d Trend: +11.4% | VIX: 15.5
+📈 Trailed Stop for TRENT.NS: ₹2,639.33 -> ₹2,865.01 (Locking in gains @ CMP 
+₹2,994.57)
+Current Portfolio NAV: ₹1,068,740.30 (Cash: ₹269,689.05 | Liquid Fund: 
+₹667,290.12 | Holdings: 1/3)
+                    Existing Open Holdings & Tax Lot Status                    
+┌────────┬─────┬────────┬────────┬────────┬────────┬────────┬────────┬────────┐
+│        │     │  Entry │    CMP │ Active │        │ Unrea… │ Holdi… │ Tax    │
+│ Ticker │ Qty │  Price │ (Toda… │   Stop │ Target │    PnL │ Period │ Status │
+├────────┼─────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+│ TRENT… │  44 │ ₹2,80… │ ₹2,99… │ ₹2,86… │ ₹3,20… │ +6.92% │   31   │ STCG   │
+│        │     │        │        │        │        │        │  days  │ (20%)  │
+└────────┴─────┴────────┴────────┴────────┴────────┴────────┴────────┴────────┘
+       Point-In-Time Screening of 10 Indian Equities (As of 2024-01-01)        
+┌─────────┬─────────┬─────────┬─────────┬────────┬─────────┬────────┬─────────┐
+│         │         │   Close │         │    RSI │     Vol │ 63d RS │    Rank │
+│ Ticker  │ Sector  │     (₹) │ Stage-… │   (14) │   Ratio │  Alpha │   Score │
+├─────────┼─────────┼─────────┼─────────┼────────┼─────────┼────────┼─────────┤
+│ BEL.NS  │ Aerosp… │ ₹180.65 │   YES   │   78.6 │   0.66x │ +25.6% │    3.28 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Defense │         │         │        │         │        │         │
+│ ADANIP… │ Infras… │ ₹1,033… │   YES   │   66.0 │   0.37x │ +15.9% │    3.80 │
+│         │ / Ports │         │         │        │         │        │         │
+│ RELIAN… │ Energy  │ ₹1,279… │   NO    │   71.2 │   0.33x │  -0.4% │   -1.02 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Petroc… │         │         │        │         │        │         │
+│ SUNPHA… │ Pharma… │ ₹1,226… │   YES   │   66.5 │   0.38x │  -0.1% │    3.00 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Health… │         │         │        │         │        │         │
+│ INFY.NS │ Inform… │ ₹1,397… │   YES   │   59.7 │   0.43x │  -2.2% │    2.89 │
+│         │ Techno… │         │         │        │         │        │         │
+│ HDFCBA… │ Banking │ ₹812.99 │   NO    │   72.0 │   0.38x │  +0.1% │   -1.00 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ ICICIB… │ Banking │ ₹975.06 │   YES   │   54.5 │   0.47x │  -5.3% │    2.73 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ Servic… │         │         │        │         │        │         │
+│ LT.NS   │ Engine… │ ₹3,432… │   YES   │   70.4 │   0.41x │  +5.8% │    2.29 │
+│         │ &       │         │         │        │         │        │         │
+│         │ Constr… │         │         │        │         │        │         │
+│ BAJFIN… │ Non-Ba… │ ₹717.40 │   NO    │   47.5 │   0.32x │ -17.1% │   -1.85 │
+│         │ Financ… │         │         │        │         │        │         │
+│         │ (NBFC)  │         │         │        │         │        │         │
+└─────────┴─────────┴─────────┴─────────┴────────┴─────────┴────────┴─────────┘
+┌──────────── 🧠 Active Institutional Memory (Learned Guardrails) ────────────┐
+│   1. Mandate that no position shall be initiated unless the asset satisfies │
+│ the Minervini Stage-2 trend alignment criteria (Price > SMA50 > SMA150 >    │
+│ SMA200) regardless of how attractive the fundamental cash conversion or     │
+│ valuation metrics appear.                                                   │
+│   2. For all breakout entries, the position must be liquidated if the price │
+│ fails to maintain a close above the breakout level for three consecutive    │
+│ sessions, regardless of the initial stop-loss distance.                     │
+│   3. For all momentum-based entries, the stop-loss must be set at a minimum │
+│ of 2.5 times the 14-day ATR to account for sector-specific volatility and   │
+│ prevent premature liquidation during standard consolidation phases.         │
+│   4. Mandate a minimum 20-day volume ratio of 1.1x for all breakout entries │
+│ to ensure institutional participation and prevent entry into low-conviction │
+│ price extensions.                                                           │
+│   5. Mandate CFO/PAT > 0.8; downgrade to HOLD if CFO < 0.                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+Portfolio has 2 open slot(s). Evaluating top candidates from docket...
+  • Skipping ADANIPORTS.NS: Volume ratio 0.37x < 0.90x (Vetoed by False 
+Breakout Rule)
+  • Skipping BEL.NS: Volume ratio 0.66x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping SUNPHARMA.NS: Volume ratio 0.38x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping INFY.NS: Volume ratio 0.43x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping ICICIBANK.NS: Volume ratio 0.47x < 0.90x (Vetoed by False Breakout
+Rule)
+  • Skipping LT.NS: Volume ratio 0.41x < 0.90x (Vetoed by False Breakout Rule)
+  • Skipping HDFCBANK.NS: Volume ratio 0.38x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping RELIANCE.NS: Volume ratio 0.33x < 0.90x (Vetoed by False Breakout 
+Rule)
+  • Skipping BAJFINANCE.NS: Volume ratio 0.32x < 0.90x (Vetoed by False 
+Breakout Rule)
+
+▲ PROFIT TARGET HIT: TRENT.NS target ₹3,203.98 reached on 2024-01-11! (Held: 
+41d | Tax: ₹3,464.42 STCG | Net PnL: +11.23%)
+🏦 Treasury Liquid Sweep: Parked ₹972,388.93 in 6.75% Liquid Mutual Fund. 
+Accrued +₹5,542.81 risk-free yield over 31 days.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

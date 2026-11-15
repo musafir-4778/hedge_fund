@@ -1,0 +1,15 @@
+langgraph>=0.2.50
+langgraph-checkpoint-sqlite>=2.0.0
+langchain-core>=0.3.20
+langchain-google-genai>=2.0.5
+yfinance>=0.2.50
+pandas>=2.2.0
+numpy>=1.26.0
+pydantic>=2.9.0
+apscheduler>=3.10.4
+feedparser>=6.0.11
+pytz>=2024.1
+python-dotenv>=1.0.1
+tenacity>=9.0.0
+rich>=13.7.0
+
