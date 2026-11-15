@@ -1,0 +1,32 @@
+[Logging] Saving all terminal output to: daily_planning_debate_20stocks.txt
+
+===============================================================================
+=
+  DAY-TO-DAY WALK-FORWARD TRAINING & SIMULATION (20 STOCKS)
+===============================================================================
+=
+Universe: TRENT.NS, BEL.NS, ADANIPORTS.NS, RELIANCE.NS, INFY.NS, ICICIBANK.NS, 
+HDFCBANK.NS, SUNPHARMA.NS, BAJFINANCE.NS, LT.NS... (20 Liquid Equities)
+Downloading point-in-time daily bars for universe + Nifty 50 + India VIX...
+Simulation window: 2026-10-14 to 2026-11-13 (21 trading sessions)
+Enforcing strict point-in-time isolation: date > T is completely hidden from 
+agents.
+Mode: 10-Agent Committee Evaluation | Sizing Cap: Max 3 concurrent holdings 
+(6-12% NAV each)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+  📅 DAY 1/21 — COMMITTEE DEBATE & FUTURE PLANNING (2026-10-14)
+  Top Docket Candidate: ADANIPORTS.NS (Infrastructure / Ports) | Score: 3.09 | 
+RS Alpha: +1.8% | Regime: ACTIVE_LIQUIDATION_BEAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...

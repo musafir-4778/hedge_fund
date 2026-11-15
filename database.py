@@ -194,6 +194,10 @@ def init_db():
             cursor.execute("ALTER TABLE portfolio_account ADD COLUMN total_tax_paid REAL DEFAULT 0.0;")
         if "fy_ltcg_exempt_used" not in columns:
             cursor.execute("ALTER TABLE portfolio_account ADD COLUMN fy_ltcg_exempt_used REAL DEFAULT 0.0;")
+        if "current_fy" not in columns:
+            cursor.execute("ALTER TABLE portfolio_account ADD COLUMN current_fy TEXT DEFAULT 'FY2025-26';")
+        if "fy_stcl_carryforward" not in columns:
+            cursor.execute("ALTER TABLE portfolio_account ADD COLUMN fy_stcl_carryforward REAL DEFAULT 0.0;")
 
         # Seed initial account if not present
         cursor.execute("SELECT COUNT(*) FROM portfolio_account WHERE id = 1;")
@@ -202,12 +206,32 @@ def init_db():
             cursor.execute(
                 """
                 INSERT INTO portfolio_account 
-                (id, cash, initial_capital, currency, updated_at, liquid_fund_balance, total_interest_earned, total_tax_paid, fy_ltcg_exempt_used)
-                VALUES (1, ?, ?, ?, ?, 0.0, 0.0, 0.0, 0.0);
+                (id, cash, initial_capital, currency, updated_at, liquid_fund_balance, total_interest_earned, total_tax_paid, fy_ltcg_exempt_used, current_fy, fy_stcl_carryforward)
+                VALUES (1, ?, ?, ?, ?, 0.0, 0.0, 0.0, 0.0, 'FY2025-26', 0.0);
                 """,
                 (INITIAL_CAPITAL_INR, INITIAL_CAPITAL_INR, CURRENCY, now_str)
             )
             logger.info(f"Initialized portfolio_account with ₹{INITIAL_CAPITAL_INR:,.2f} INR.")
+
+        # Auto-migration of trade_post_mortems for regime tagging, relaxation rules, and hit-rate pruning
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        pm_columns = [c[1] for c in cursor.fetchall()]
+        if "market_regime" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN market_regime TEXT DEFAULT 'ALL';")
+        if "rule_type" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN rule_type TEXT DEFAULT 'RISK_GUARDRAIL';")
+        if "success_score" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN success_score REAL DEFAULT 1.0;")
+        if "false_veto_count" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN false_veto_count INTEGER DEFAULT 0;")
+        if "is_active" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN is_active INTEGER DEFAULT 1;")
+        if "applicable_regime" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN applicable_regime TEXT DEFAULT 'ALL_REGIMES';")
+        if "rule_polarity" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN rule_polarity TEXT DEFAULT 'DEFENSIVE_GUARDRAIL';")
+        if "veto_count" not in pm_columns:
+            cursor.execute("ALTER TABLE trade_post_mortems ADD COLUMN veto_count INTEGER DEFAULT 0;")
 
         conn.commit()
 
@@ -412,16 +436,20 @@ def log_tax_deduction(tax_data: Dict[str, Any], ticker: str, timestamp: Optional
         # Update cumulative totals in portfolio_account
         tax_deducted = tax_data.get("tax_deducted", 0.0)
         new_exempt = tax_data.get("new_fy_exempt_used", 0.0)
-        
+        new_stcl = tax_data.get("new_fy_stcl", 0.0)
+        fy_str = tax_data.get("financial_year", "FY2025-26")
+
         conn.execute(
             """
             UPDATE portfolio_account 
             SET total_tax_paid = total_tax_paid + ?,
                 fy_ltcg_exempt_used = ?,
+                fy_stcl_carryforward = ?,
+                current_fy = ?,
                 updated_at = ?
             WHERE id = 1;
             """,
-            (round(tax_deducted, 2), round(new_exempt, 2), ts)
+            (round(tax_deducted, 2), round(new_exempt, 2), round(new_stcl, 2), fy_str, ts)
         )
         conn.commit()
         return tax_id
@@ -659,7 +687,8 @@ def save_thesis_snapshot(
     news_macro_report: str,
     debate_summary: str,
     risk_summary: str,
-    pm_rationale: str
+    pm_rationale: str,
+    status: str = "OPEN"
 ) -> int:
     """Stores immutable entry snapshot for post-mortem analysis."""
     with get_db_connection() as conn:
@@ -670,7 +699,7 @@ def save_thesis_snapshot(
             (ticker, sector, opened_at, entry_price, stop_loss, target_price, indicators_json,
              technical_report, fundamental_report, news_macro_report, debate_summary,
              risk_summary, pm_rationale, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN');
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
             """,
             (
                 ticker,
@@ -679,13 +708,14 @@ def save_thesis_snapshot(
                 round(entry_price, 2),
                 round(stop_loss, 2),
                 round(target_price, 2),
-                json.dumps(indicators),
-                technical_report,
-                fundamental_report,
-                news_macro_report,
-                debate_summary,
-                risk_summary,
-                pm_rationale
+                json.dumps(indicators or {}),
+                technical_report or "N/A",
+                fundamental_report or "N/A",
+                news_macro_report or "N/A",
+                debate_summary or "N/A",
+                risk_summary or "N/A",
+                pm_rationale or "N/A",
+                status or "OPEN"
             )
         )
         conn.commit()
@@ -728,33 +758,88 @@ def save_trade_post_mortem(
     accurate_agent: str,
     failed_agent: str,
     root_cause: str,
-    actionable_rule: str
+    actionable_rule: str,
+    market_regime: str = "ALL",
+    rule_type: str = "RISK_GUARDRAIL",
+    success_score: float = 1.0,
+    false_veto_count: int = 0,
+    is_active: int = 1,
+    applicable_regime: Optional[str] = None,
+    rule_polarity: Optional[str] = None,
+    veto_count: int = 0
 ) -> int:
-    """Inserts a structured post-mortem reflection."""
+    """Inserts a structured post-mortem reflection with regime tagging, polarity, and hit-rate tracking."""
+    final_regime = applicable_regime or market_regime or "ALL_REGIMES"
+    final_polarity = rule_polarity or rule_type or "DEFENSIVE_GUARDRAIL"
+    final_veto = veto_count or false_veto_count or 0
+
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute(
-            """
-            INSERT INTO trade_post_mortems
-            (snapshot_id, ticker, sector, closed_at, outcome, pnl_pct, holding_days,
-             primary_driver, accurate_agent, failed_agent, root_cause, actionable_rule)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-            """,
-            (
-                snapshot_id,
-                ticker,
-                sector,
-                get_ist_now(),
-                outcome,
-                round(pnl_pct, 4),
-                holding_days,
-                primary_driver,
-                accurate_agent,
-                failed_agent,
-                root_cause,
-                actionable_rule
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+
+        if "applicable_regime" in cols and "rule_polarity" in cols:
+            cursor.execute(
+                """
+                INSERT INTO trade_post_mortems
+                (snapshot_id, ticker, sector, closed_at, outcome, pnl_pct, holding_days,
+                 primary_driver, accurate_agent, failed_agent, root_cause, actionable_rule,
+                 market_regime, rule_type, success_score, false_veto_count, is_active,
+                 applicable_regime, rule_polarity, veto_count)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """,
+                (
+                    snapshot_id,
+                    ticker,
+                    sector,
+                    get_ist_now(),
+                    outcome,
+                    round(pnl_pct, 4),
+                    holding_days,
+                    primary_driver,
+                    accurate_agent,
+                    failed_agent,
+                    root_cause,
+                    actionable_rule,
+                    final_regime,
+                    final_polarity,
+                    success_score,
+                    final_veto,
+                    is_active,
+                    final_regime,
+                    final_polarity,
+                    final_veto
+                )
             )
-        )
+        else:
+            cursor.execute(
+                """
+                INSERT INTO trade_post_mortems
+                (snapshot_id, ticker, sector, closed_at, outcome, pnl_pct, holding_days,
+                 primary_driver, accurate_agent, failed_agent, root_cause, actionable_rule,
+                 market_regime, rule_type, success_score, false_veto_count, is_active)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """,
+                (
+                    snapshot_id,
+                    ticker,
+                    sector,
+                    get_ist_now(),
+                    outcome,
+                    round(pnl_pct, 4),
+                    holding_days,
+                    primary_driver,
+                    accurate_agent,
+                    failed_agent,
+                    root_cause,
+                    actionable_rule,
+                    final_regime,
+                    final_polarity,
+                    success_score,
+                    final_veto,
+                    is_active
+                )
+            )
         conn.commit()
         return cursor.lastrowid
 
@@ -789,26 +874,200 @@ def _deduplicate_rules(rules: List[str], limit: int, threshold: float = 0.65) ->
     return unique_rules
 
 
-def get_top_actionable_rules(limit: int = 5) -> List[str]:
-    """Retrieves top recent diverse actionable guardrail rules for prompt injection."""
+def get_top_actionable_rules(limit: int = 5, market_regime: Optional[str] = None) -> List[str]:
+    """Retrieves top recent diverse actionable guardrail rules filtered by regime and active status."""
     with get_db_connection() as conn:
-        rows = conn.execute(
-            "SELECT actionable_rule FROM trade_post_mortems WHERE actionable_rule != '' ORDER BY id DESC LIMIT ?;",
-            (limit * 5,)
-        ).fetchall()
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+        has_regime = "market_regime" in cols
+        has_active = "is_active" in cols
+
+        query = "SELECT actionable_rule FROM trade_post_mortems WHERE actionable_rule != ''"
+        params: List[Any] = []
+
+        if has_active:
+            query += " AND (is_active = 1 OR is_active IS NULL)"
+
+        if has_regime and market_regime:
+            # If in BULL_STAGE2 or recovery, mask pure bear-market rules
+            if market_regime in ["BULL_STAGE2", "CHOPPY_RANGE"]:
+                query += " AND (market_regime IN (?, 'ALL', '') OR market_regime IS NULL)"
+                params.append(market_regime)
+            else:
+                query += " AND (market_regime IN (?, 'ALL', '') OR market_regime IS NULL)"
+                params.append(market_regime)
+
+        query += " ORDER BY id DESC LIMIT ?;"
+        params.append(limit * 5)
+
+        rows = conn.execute(query, tuple(params)).fetchall()
         raw_rules = [r["actionable_rule"] for r in rows]
         return _deduplicate_rules(raw_rules, limit=limit, threshold=0.65)
 
 
-def get_sector_actionable_rules(sector: str, limit: int = 3) -> List[str]:
-    """Retrieves rules learned specifically from past trades in this sector with deduplication."""
+def get_regime_balanced_rules(sector: str, market_regime: str, limit: int = 5) -> List[str]:
+    """Retrieves a balanced 5-rule context (Max 2 Regime-Matching Defensive, Max 2 Sector, Min 1 Opportunity Leeway)."""
     with get_db_connection() as conn:
-        rows = conn.execute(
-            "SELECT actionable_rule FROM trade_post_mortems WHERE sector = ? AND actionable_rule != '' ORDER BY id DESC LIMIT ?;",
-            (sector, limit * 5)
-        ).fetchall()
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+        has_active = "is_active" in cols
+        has_polarity = "rule_polarity" in cols
+        has_applicable = "applicable_regime" in cols
+
+        # 1. Max 2 Regime-Matching Defensive Guardrails
+        q1 = "SELECT actionable_rule FROM trade_post_mortems WHERE actionable_rule != ''"
+        p1: List[Any] = []
+        if has_active:
+            q1 += " AND (is_active = 1 OR is_active IS NULL)"
+        if has_polarity:
+            q1 += " AND (rule_polarity = 'DEFENSIVE_GUARDRAIL' OR outcome = 'LOSS')"
+        else:
+            q1 += " AND outcome = 'LOSS'"
+        
+        if has_applicable:
+            q1 += " AND (applicable_regime IN (?, 'ALL_REGIMES', 'ALL') OR applicable_regime IS NULL)"
+            p1.append(market_regime)
+        else:
+            q1 += " AND (market_regime IN (?, 'ALL', '') OR market_regime IS NULL)"
+            p1.append(market_regime)
+        q1 += " ORDER BY id DESC LIMIT 15;"
+        rows1 = conn.execute(q1, tuple(p1)).fetchall()
+        regime_rules = _deduplicate_rules([r["actionable_rule"] for r in rows1], limit=2)
+
+        # 2. Max 2 Sector-Specific Guardrails
+        q2 = "SELECT actionable_rule FROM trade_post_mortems WHERE sector = ? AND actionable_rule != ''"
+        p2: List[Any] = [sector]
+        if has_active:
+            q2 += " AND (is_active = 1 OR is_active IS NULL)"
+        q2 += " ORDER BY id DESC LIMIT 15;"
+        rows2 = conn.execute(q2, tuple(p2)).fetchall()
+        sector_rules = _deduplicate_rules([r["actionable_rule"] for r in rows2], limit=2)
+
+        # 3. Min 1 Opportunity / Profit-Capture Rule
+        q3 = "SELECT actionable_rule FROM trade_post_mortems WHERE actionable_rule != ''"
+        if has_active:
+            q3 += " AND (is_active = 1 OR is_active IS NULL)"
+        if has_polarity:
+            q3 += " AND (rule_polarity = 'OPPORTUNITY_LEEWAY' OR outcome IN ('WIN', 'MISSED_WINNER', 'MISSED_OPPORTUNITY') OR rule_type = 'RELAXATION_RULE')"
+        else:
+            q3 += " AND (outcome IN ('WIN', 'MISSED_WINNER', 'MISSED_OPPORTUNITY') OR rule_type = 'RELAXATION_RULE')"
+        q3 += " ORDER BY id DESC LIMIT 15;"
+        rows3 = conn.execute(q3).fetchall()
+        opp_rules = _deduplicate_rules([r["actionable_rule"] for r in rows3], limit=2)
+
+        # Combine balanced list ensuring at least 1 opportunity rule when available
+        combined = []
+        for r in regime_rules[:2]:
+            if r not in combined:
+                combined.append(r)
+        for r in sector_rules[:2]:
+            if r not in combined and len(combined) < 4:
+                combined.append(r)
+        for r in opp_rules:
+            if r not in combined:
+                combined.append(r)
+                break
+
+        return combined[:limit]
+
+
+
+
+def get_sector_actionable_rules(sector: str, limit: int = 3, market_regime: Optional[str] = None) -> List[str]:
+    """Retrieves rules learned specifically from past trades in this sector with regime and active filtering."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+        has_regime = "market_regime" in cols
+        has_active = "is_active" in cols
+
+        query = "SELECT actionable_rule FROM trade_post_mortems WHERE sector = ? AND actionable_rule != ''"
+        params: List[Any] = [sector]
+
+        if has_active:
+            query += " AND (is_active = 1 OR is_active IS NULL)"
+
+        if has_regime and market_regime:
+            query += " AND (market_regime IN (?, 'ALL', '') OR market_regime IS NULL)"
+            params.append(market_regime)
+
+        query += " ORDER BY id DESC LIMIT ?;"
+        params.append(limit * 5)
+
+        rows = conn.execute(query, tuple(params)).fetchall()
         raw_rules = [r["actionable_rule"] for r in rows]
         return _deduplicate_rules(raw_rules, limit=limit, threshold=0.65)
+
+
+def record_rule_veto_outcome(rule_id: int, stock_dropped: bool):
+    """Updates hit-rate score for a rule used in a veto: rewards correct defense, penalizes missed rallies."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+        if "false_veto_count" not in cols:
+            return
+
+        if stock_dropped:
+            # Correct defensive veto
+            cursor.execute(
+                """
+                UPDATE trade_post_mortems
+                SET success_score = success_score + 0.5,
+                    false_veto_count = MAX(0, false_veto_count - 1)
+                WHERE id = ?;
+                """,
+                (rule_id,)
+            )
+        else:
+            # False positive veto (vetoed stock rallied > 15%)
+            cursor.execute(
+                """
+                UPDATE trade_post_mortems
+                SET success_score = success_score - 1.0,
+                    false_veto_count = false_veto_count + 1,
+                    is_active = CASE WHEN false_veto_count + 1 >= 3 THEN 0 ELSE is_active END
+                WHERE id = ?;
+                """,
+                (rule_id,)
+            )
+        conn.commit()
+
+
+def prune_stale_or_invalid_rules(max_age_days: int = 180, max_false_vetoes: int = 3) -> Dict[str, int]:
+    """Deactivates rules exceeding false-veto threshold or stagnant beyond max_age_days without validation."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(trade_post_mortems);")
+        cols = [c[1] for c in cursor.fetchall()]
+        if "is_active" not in cols:
+            return {"pruned_false_vetoes": 0, "pruned_stale": 0}
+
+        # 1. Prune rules with >= max_false_vetoes
+        cursor.execute(
+            "UPDATE trade_post_mortems SET is_active = 0 WHERE is_active = 1 AND false_veto_count >= ?;",
+            (max_false_vetoes,)
+        )
+        pruned_false = cursor.rowcount
+
+        # 2. Deactivate obsolete blanket bans (e.g. Rule #136 if conflicting with #137)
+        cursor.execute(
+            """
+            UPDATE trade_post_mortems
+            SET is_active = 0
+            WHERE is_active = 1 AND (
+                actionable_rule LIKE '%all long positions must be liquidated%'
+                OR actionable_rule LIKE '%prohibit new long positions if%'
+            );
+            """
+        )
+        pruned_stale = cursor.rowcount
+        conn.commit()
+        logger.info(f"[Rule Pruning] Deactivated {pruned_false} false-veto rules and {pruned_stale} obsolete blanket rules.")
+        return {"pruned_false_vetoes": pruned_false, "pruned_stale": pruned_stale}
 
 
 def get_all_post_mortems(limit: int = 50) -> List[Dict[str, Any]]:

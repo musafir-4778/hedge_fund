@@ -144,27 +144,10 @@ def run_quant_screener(universe_limit: Optional[int] = None) -> List[Dict[str, A
             if rs_alpha_63d <= 0.0:
                 continue
 
-            # 4. Quality Fundamental Filter
-            fund = fetch_fundamental_metrics(sym)
-            sector = fund.get("sector", item.get("industry", ""))
-
-            if sector == "Financial Services":
-                # Financials: ROE >= 0.14 and positive earnings growth
-                if fund.get("roe", 0.0) < 0.14 or fund.get("earnings_growth", 0.0) <= 0.0:
-                    continue
-            else:
-                # Non-financials
-                roe_pass = fund.get("roe", 0.0) >= 0.15
-                debt_pass = fund.get("debt_to_equity", 0.0) <= 100.0  # 1.0x
-                rev_pass = fund.get("revenue_growth", 0.0) > 0.05
-                ocf_pass = fund.get("operating_cash_flow", 0.0) > 0.0
-                if not (roe_pass and debt_pass and rev_pass and ocf_pass):
-                    continue
-
             candidates.append({
                 "ticker": sym,
                 "symbol": item["symbol"],
-                "sector": sector,
+                "industry": item.get("industry", "General"),
                 "latest_close": round(latest_close, 2),
                 "rs_alpha_63d": round(rs_alpha_63d, 4),
                 "avg_turnover_cr": round(avg_daily_turnover_inr / 1e7, 2),
@@ -175,9 +158,37 @@ def run_quant_screener(universe_limit: Optional[int] = None) -> List[Dict[str, A
             logger.debug(f"Screener check skipped for {sym}: {e}")
             continue
 
-    # Rank by RS_Alpha_63d descending and return Top 3
+    # Rank technical leaders by RS_Alpha_63d descending first
     candidates.sort(key=lambda x: x["rs_alpha_63d"], reverse=True)
-    top_3 = candidates[:3]
+    top_technical_leaders = candidates[:12]
+
+    # Only run fundamental audits on the top 12 technical leaders until 3 pass quality checks
+    top_3 = []
+    for cand in top_technical_leaders:
+        sym = cand["ticker"]
+        try:
+            fund = fetch_fundamental_metrics(sym)
+            sector = fund.get("sector", cand.get("industry", "General"))
+
+            if sector == "Financial Services":
+                if fund.get("roe", 0.0) < 0.14 or fund.get("earnings_growth", 0.0) <= 0.0:
+                    continue
+            else:
+                roe_pass = fund.get("roe", 0.0) >= 0.15
+                debt_pass = fund.get("debt_to_equity", 0.0) <= 100.0  # 1.0x
+                rev_pass = fund.get("revenue_growth", 0.0) > 0.05
+                ocf_pass = fund.get("operating_cash_flow", 0.0) > 0.0
+                if not (roe_pass and debt_pass and rev_pass and ocf_pass):
+                    continue
+
+            cand["sector"] = sector
+            top_3.append(cand)
+            if len(top_3) >= 3:
+                break
+        except Exception as e:
+            logger.debug(f"Fundamental check failed for {sym}: {e}")
+            continue
+
     logger.info(f"Quant Screener selected top {len(top_3)} candidates: {[c['ticker'] for c in top_3]}")
     return top_3
 

@@ -51,6 +51,7 @@ from analytics import (
 )
 from reflection_engine import simulate_mistake_learning
 from rich.table import Table
+from rich.panel import Panel
 from ui import (
     print_banner,
     print_market_regime_badge,
@@ -163,7 +164,8 @@ def job_daily_close():
         acc = get_portfolio_account()
         positions = get_all_positions()
         rules = get_top_actionable_rules(limit=3)
-        total_nav = acc["cash"] + sum(p["qty"] * p["avg_price"] for p in positions)
+        liquid_bal = float(acc.get("liquid_fund_balance", 0.0) or 0.0)
+        total_nav = acc["cash"] + liquid_bal + sum(p["qty"] * p["avg_price"] for p in positions)
         ret_pct = ((total_nav - INITIAL_CAPITAL_INR) / INITIAL_CAPITAL_INR) * 100.0
         notify_evening_summary(total_nav, ret_pct, acc["cash"], positions, rules)
     except Exception as e:
@@ -677,6 +679,40 @@ def handle_treasury_report():
     console.print(Panel(panel_text, title="🏦 Overnight Liquid Sweep & Yield Scorecard", border_style="green"))
 
 
+def handle_view_debate(ticker_filter: Optional[str] = None):
+    """Displays verbatim investment committee debate transcripts from SQLite."""
+    from database import get_db_connection
+    init_db()
+    with get_db_connection() as conn:
+        if ticker_filter and ticker_filter != "ALL":
+            t_norm = normalize_ticker(ticker_filter)
+            rows = conn.execute(
+                "SELECT * FROM thesis_snapshots WHERE ticker = ? ORDER BY id DESC LIMIT 5;",
+                (t_norm,)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM thesis_snapshots WHERE ticker NOT IN ('TEST_STOCK.NS', 'MOCK_STOCK.NS', 'TEST_LOSS.NS') ORDER BY id DESC LIMIT 5;"
+            ).fetchall()
+
+    if not rows:
+        console.print("[yellow]No investment committee debate snapshots found in database.[/yellow]")
+        return
+
+    for r in rows:
+        console.print(f"\n{'━'*80}", style="bold magenta")
+        console.print(f"  🏛️ [bold bright_white]INVESTMENT COMMITTEE DEBATE TRANSCRIPT: {r['ticker']} (Snapshot #{r['id']})[/bold bright_white]", style="on magenta")
+        console.print(f"{'━'*80}", style="bold magenta")
+        console.print(f"[cyan]Sector:[/] {r['sector']} | [cyan]Entry Price:[/] ₹{r['entry_price']:,.2f} | [cyan]Stop:[/] ₹{r['stop_loss']:,.2f} | [cyan]Target:[/] ₹{r['target_price']:,.2f}")
+
+        if r["debate_summary"]:
+            console.print(Panel(r["debate_summary"], title=f"⚔️ Research Manager Debate Synthesis ({r['ticker']})", border_style="cyan"))
+        if r["risk_summary"]:
+            console.print(Panel(r["risk_summary"], title=f"🛡️ Risk Committee Perspective", border_style="red"))
+        if r["pm_rationale"]:
+            console.print(Panel(r["pm_rationale"], title=f"🎯 Lead Portfolio Manager Order & Rationale", border_style="green"))
+
+
 def main():
     parser = argparse.ArgumentParser(description="Autonomous Indian Wealth Management Investment Office")
     parser.add_argument("--trade-now", type=str, nargs="?", const="AUTO_DISCOVER", help="Run immediate live paper trading session (optional ticker or auto-discover)")
@@ -692,27 +728,50 @@ def main():
     parser.add_argument("--tax-report", action="store_true", help="Print Indian Capital Gains Tax (STCG/LTCG) ledger report")
     parser.add_argument("--treasury-report", action="store_true", help="Print Liquid Mutual Fund sweep & risk-free yield report")
     parser.add_argument("--learn", action="store_true", help="Inspect Institutional Memory Bank of learned mistake rules")
+    parser.add_argument("--prune-rules", action="store_true", help="Prune obsolete or false-veto rules from SQLite memory bank")
+    parser.add_argument("--audit-inaction", action="store_true", help="Run missed opportunity / inaction bias audit on vetoed candidates")
     parser.add_argument("--simulate-mistake", type=str, nargs="?", const="TATAMOTORS.NS", help="Simulate a trade loss and synthesize an institutional guardrail rule")
     parser.add_argument("--simulate-1y", action="store_true", help="Run 1-year walk-forward point-in-time simulated learning backtest (strict no lookahead bias)")
+    parser.add_argument("--daily-training", action="store_true", help="Run day-to-day walk-forward training & simulation across 20 stocks")
+    parser.add_argument("--stocks", type=int, default=20, help="Number of stocks for simulation universe (default: 20)")
+    parser.add_argument("--days", type=int, default=21, help="Number of trading days for daily training (default: 21 for ~1 month)")
+    parser.add_argument("--fast", action="store_true", help="Run fast quantitative sizing without invoking full LLM investment committee")
     parser.add_argument("--monthly-debate", action="store_true", help="Run month-to-month live multi-agent committee debate & learning across past year")
     parser.add_argument("--curriculum-block", type=str, choices=["block_1", "block_2", "block_3", "block_4", "oos_a", "oos_b"],
                         help="Execute multi-regime training block (e.g., block_1, block_2, block_3, block_4, oos_a, oos_b)")
     parser.add_argument("--months", type=int, default=12, help="Number of months for monthly debate (default: 12)")
     parser.add_argument("--log-file", type=str, default=None, help="Save all terminal output to a txt file (default: monthly_debate_output.txt)")
+    parser.add_argument("--morning-run", action="store_true", help="Run 08:30 discovery + 09:30 committee review in sequence")
+    parser.add_argument("--close-run", action="store_true", help="Run 03:15 trailing stop audit + 03:45 close settlement in sequence")
+    parser.add_argument("--view-debate", type=str, nargs="?", const="ALL", help="Inspect verbatim investment committee debate transcripts from database (e.g. ADANIPORTS.NS)")
     parser.add_argument("--daemon", action="store_true", help="Start unattended IST market hours daemon")
 
     args = parser.parse_args()
 
-    # Enable terminal logging to txt file if requested or running monthly debate
+    # Enable terminal logging to txt file if requested or running monthly debate / daily training
     if args.log_file:
         enable_terminal_logging(args.log_file)
         print(f"[Logging] Saving all terminal output to: {args.log_file}")
+    elif args.daily_training:
+        fname = "daily_training_20stocks_1m.txt"
+        enable_terminal_logging(fname)
+        print(f"[Logging] Saving all terminal output to: {fname}")
     elif args.monthly_debate or args.curriculum_block:
         fname = f"curriculum_{args.curriculum_block}_output.txt" if args.curriculum_block else "monthly_debate_output.txt"
         enable_terminal_logging(fname)
         print(f"[Logging] Saving all terminal output to: {fname}")
 
-    if args.curriculum_block:
+    if args.daily_training:
+        from backtest_simulation import run_walkforward_simulation, DEFAULT_20_STOCKS, DEFAULT_SIMULATION_UNIVERSE
+        universe = DEFAULT_20_STOCKS if args.stocks >= 20 else DEFAULT_SIMULATION_UNIVERSE[:args.stocks]
+        run_walkforward_simulation(
+            universe=universe,
+            duration_days=args.days,
+            use_committee=not args.fast,
+            use_llm_reflection=True,
+            reset_db_first=args.reset,
+        )
+    elif args.curriculum_block:
         from monthly_learning import run_curriculum_block
         run_curriculum_block(args.curriculum_block, reset_db=args.reset, clean_all=args.clean_all)
     elif args.monthly_debate:
@@ -742,11 +801,27 @@ def main():
         handle_treasury_report()
     elif args.learn:
         handle_learn()
+    elif args.prune_rules:
+        from database import prune_stale_or_invalid_rules
+        init_db()
+        res = prune_stale_or_invalid_rules(max_age_days=180, max_false_vetoes=3)
+        console.print(f"[bold green]✔ Pruned {res['pruned_false_vetoes']} false-veto rules and {res['pruned_stale']} obsolete blanket bans.[/bold green]")
+    elif args.morning_run:
+        handle_morning_run()
+    elif args.close_run:
+        handle_close_run()
+    elif args.audit_inaction:
+        from reflection_engine import audit_vetoed_opportunities
+        init_db()
+        res = audit_vetoed_opportunities()
+        console.print(f"[bold green]✔ Inaction Audit complete: Formulated {len(res)} relaxation rules.[/bold green]")
     elif args.simulate_mistake:
         handle_simulate_mistake(args.simulate_mistake)
     elif args.simulate_1y:
         from backtest_simulation import run_1year_walkforward_simulation
         run_1year_walkforward_simulation()
+    elif args.view_debate:
+        handle_view_debate(args.view_debate)
     elif args.daemon:
         run_daemon()
     else:

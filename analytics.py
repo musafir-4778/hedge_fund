@@ -35,6 +35,7 @@ def record_daily_nav() -> Dict[str, Any]:
     """Records end-of-day portfolio NAV, active positions, and benchmark closes."""
     acc = get_portfolio_account()
     cash = acc["cash"]
+    liquid_bal = float(acc.get("liquid_fund_balance", 0.0) or 0.0)
     positions = get_all_positions()
 
     invested_value = 0.0
@@ -47,7 +48,7 @@ def record_daily_nav() -> Dict[str, Any]:
             last_price = p["avg_price"]
         invested_value += p["qty"] * float(last_price)
 
-    total_nav = cash + invested_value
+    total_nav = cash + liquid_bal + invested_value
     trade_date = datetime.now().strftime("%Y-%m-%d")
 
     # Fetch benchmarks
@@ -98,8 +99,9 @@ def compute_performance_metrics() -> Dict[str, Any]:
     acc = get_portfolio_account()
     positions = get_all_positions()
 
+    liquid_bal = float(acc.get("liquid_fund_balance", 0.0) or 0.0)
     invested_value = sum(p["qty"] * p["avg_price"] for p in positions)
-    current_nav = acc["cash"] + invested_value
+    current_nav = acc["cash"] + liquid_bal + invested_value
     total_return_pct = round(((current_nav - INITIAL_CAPITAL_INR) / INITIAL_CAPITAL_INR) * 100.0, 2)
 
     history = get_nav_history(limit=252)

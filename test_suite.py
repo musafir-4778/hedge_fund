@@ -53,6 +53,8 @@ class TestWealthAgentOffice(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         init_db()
+        from database import reset_portfolio_account
+        reset_portfolio_account(clean_trades=False)
 
     def test_01_state_contracts(self):
         """Validates Pydantic schemas enforce bounds and types."""
@@ -99,7 +101,8 @@ class TestWealthAgentOffice(unittest.TestCase):
     def test_02_database_operations(self):
         """Validates SQLite WAL initialization and CRUD helpers."""
         acc = get_portfolio_account()
-        self.assertGreater(acc["cash"], 0.0)
+        total_liquidity = acc["cash"] + float(acc.get("liquid_fund_balance", 0.0) or 0.0)
+        self.assertGreater(total_liquidity, 0.0)
 
         # Test snapshot
         snap_id = save_thesis_snapshot(
@@ -366,6 +369,129 @@ class TestWealthAgentOffice(unittest.TestCase):
         # Verify rate limiter safe RPM parameters
         self.assertGreaterEqual(MIN_SECONDS_BETWEEN_LLM_CALLS, 5.0)
         self.assertLessEqual(_rate_limiter.max_rpm, 12)
+
+    def test_14_zero_token_short_circuit(self):
+        """Validates zero-token short-circuit routes directly to END without calling LLM agents."""
+        from graph import data_and_memory_node, check_hard_veto, investment_app
+
+        # Case A: Severe Earnings Contraction (< -20%) -> Hard Veto 1
+        state_veto1 = {
+            "ticker": "TEST_HV1.NS",
+            "sector": "Capital Goods",
+            "market_regime": "CONFIRMED_BULL_STAGE2",
+            "technicals": {"latest_close": 200.0, "atr_14": 5.0, "sma_50": 190.0, "rs_alpha_63d": 0.01},
+            "fundamentals": {"earnings_growth": -0.35, "sector": "Capital Goods", "industry": "Industrial Machinery", "operating_cash_flow": 1000.0},
+            "benchmark_metrics": {"nifty_close": 24000.0, "nifty_sma50": 23500.0},
+            "portfolio_context": {},
+        }
+        res1 = data_and_memory_node(state_veto1)
+        self.assertTrue(res1.get("hard_veto_triggered"))
+        self.assertEqual(res1["trade_decision"]["action"], "HOLD")
+        self.assertEqual(check_hard_veto(res1), "END")
+
+        # Invoke graph directly: verify it terminates immediately at END with zero downstream LLM calls
+        final_app_res = investment_app.invoke(state_veto1)
+        self.assertTrue(final_app_res.get("hard_veto_triggered"))
+        self.assertEqual(final_app_res["trade_decision"]["action"], "HOLD")
+        self.assertIsNone(final_app_res.get("technical_report"))
+        self.assertIsNone(final_app_res.get("fundamental_report"))
+
+        # Case B: Benchmark Downtrend + Price < 50-SMA -> Hard Veto 2
+        state_veto2 = {
+            "ticker": "TEST_HV2.NS",
+            "sector": "Automobile",
+            "market_regime": "BEAR_RISK_OFF",
+            "technicals": {"latest_close": 150.0, "atr_14": 4.0, "sma_50": 180.0, "rs_alpha_63d": -0.05},
+            "fundamentals": {"earnings_growth": 0.10, "sector": "Automobile", "industry": "Auto Parts", "operating_cash_flow": 5000.0},
+            "benchmark_metrics": {"nifty_close": 21000.0, "nifty_sma50": 22000.0},
+            "portfolio_context": {},
+        }
+        res2 = data_and_memory_node(state_veto2)
+        self.assertTrue(res2.get("hard_veto_triggered"))
+        self.assertEqual(res2["trade_decision"]["action"], "HOLD")
+        self.assertEqual(check_hard_veto(res2), "END")
+
+    def test_15_regime_balanced_rules(self):
+        """Validates balanced retrieval: max 2 regime defensive, max 2 sector, min 1 opportunity leeway."""
+        from database import get_regime_balanced_rules, get_db_connection
+
+        with get_db_connection() as conn:
+            conn.execute("DELETE FROM trade_post_mortems WHERE ticker LIKE 'TEST_BAL_%';")
+            conn.execute("""
+                INSERT INTO trade_post_mortems (
+                    snapshot_id, ticker, sector, closed_at, outcome, pnl_pct, holding_days,
+                    primary_driver, accurate_agent, failed_agent, root_cause,
+                    actionable_rule, applicable_regime, rule_polarity, is_active
+                ) VALUES 
+                (101, 'TEST_BAL_1.NS', 'IT', '2024-05-01', 'LOSS', -0.05, 10, 'Technical', 'Conservative', 'Technical', 'False breakout', 'Rule 1: Mandate stop-loss at 50-SMA during early recovery.', 'EARLY_RECOVERY_PIVOT', 'DEFENSIVE_GUARDRAIL', 1),
+                (102, 'TEST_BAL_2.NS', 'IT', '2024-05-02', 'LOSS', -0.07, 12, 'Macro', 'Conservative', 'Technical', 'Market breakdown', 'Rule 2: Never buy below 200-SMA in severe liquidation.', 'ACTIVE_LIQUIDATION_BEAR', 'DEFENSIVE_GUARDRAIL', 1),
+                (103, 'TEST_BAL_3.NS', 'IT', '2024-05-03', 'LOSS', -0.04, 8, 'Risk', 'Conservative', 'Fundamental', 'Concentration', 'Rule 3: Enforce client concentration limit in IT sector.', 'ALL_REGIMES', 'DEFENSIVE_GUARDRAIL', 1),
+                (104, 'TEST_BAL_4.NS', 'IT', '2024-05-04', 'WIN', 0.15, 20, 'Technical', 'Technical', 'Conservative', 'Rally missed', 'Rule 4: Allow volume relaxation to 0.85x when RS Alpha > 0.05.', 'EARLY_RECOVERY_PIVOT', 'OPPORTUNITY_LEEWAY', 1);
+            """)
+            conn.commit()
+
+        rules = get_regime_balanced_rules(sector="IT", market_regime="EARLY_RECOVERY_PIVOT", limit=5)
+
+        # Rule 1 (matching defensive) should be present
+        self.assertTrue(any("Rule 1" in r for r in rules))
+        # Rule 2 (ACTIVE_LIQUIDATION_BEAR) must NOT be present in EARLY_RECOVERY_PIVOT context
+        self.assertFalse(any("Rule 2" in r for r in rules))
+        # Rule 4 (OPPORTUNITY_LEEWAY) must be present
+        self.assertTrue(any("Rule 4" in r for r in rules))
+        self.assertLessEqual(len(rules), 5)
+
+        # Cleanup test records
+        with get_db_connection() as conn:
+            conn.execute("DELETE FROM trade_post_mortems WHERE ticker LIKE 'TEST_BAL_%';")
+            conn.commit()
+
+    def test_16_intra_year_stcl_offset(self):
+        """Validates intra-year STCL loss offsets subsequent STCG gains and resets across April 1."""
+        from tax_engine import compute_capital_gains_tax
+
+        # 1. Loss trade generates ₹20,000 STCL carryforward in FY2024-25
+        loss_res = compute_capital_gains_tax(
+            buy_date="2024-05-01",
+            sell_date="2024-06-01",
+            cost_basis=100000.0,
+            net_proceeds=80000.0,
+            fy_stcl_carryforward=0.0,
+            current_fy="FY2024-25"
+        )
+        self.assertEqual(loss_res["term_type"], "STCG")
+        self.assertEqual(loss_res["gross_pnl"], -20000.0)
+        self.assertEqual(loss_res["new_fy_stcl"], 20000.0)
+        self.assertEqual(loss_res["tax_deducted"], 0.0)
+
+        # 2. Subsequent ₹50,000 gain in same FY offsets ₹20,000 STCL -> tax on net ₹30,000 @ 20% = ₹6,000
+        gain_res = compute_capital_gains_tax(
+            buy_date="2024-07-01",
+            sell_date="2024-08-01",
+            cost_basis=100000.0,
+            net_proceeds=150000.0,
+            fy_stcl_carryforward=loss_res["new_fy_stcl"],
+            current_fy="FY2024-25"
+        )
+        self.assertEqual(gain_res["gross_pnl"], 50000.0)
+        self.assertEqual(gain_res["stcl_offset_applied"], 20000.0)
+        self.assertEqual(gain_res["taxable_pnl"], 30000.0)
+        self.assertEqual(gain_res["tax_deducted"], 6000.0)
+        self.assertEqual(gain_res["new_fy_stcl"], 0.0)
+
+        # 3. New trade in next financial year (FY2025-26) resets prior STCL carryforward across April 1
+        rollover_res = compute_capital_gains_tax(
+            buy_date="2025-04-10",
+            sell_date="2025-05-15",
+            cost_basis=100000.0,
+            net_proceeds=130000.0,
+            fy_stcl_carryforward=20000.0,
+            current_fy="FY2024-25"  # Prior FY triggers April 1 reset
+        )
+        self.assertEqual(rollover_res["financial_year"], "FY2025-26")
+        self.assertEqual(rollover_res["stcl_offset_applied"], 0.0)
+        self.assertEqual(rollover_res["taxable_pnl"], 30000.0)
+        self.assertEqual(rollover_res["tax_deducted"], 6000.0)
+
 
 
 if __name__ == "__main__":

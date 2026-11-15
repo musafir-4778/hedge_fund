@@ -1,0 +1,368 @@
+[Logging] Saving all terminal output to: daily_training_20stocks_3m.txt
+
+===============================================================================
+=
+  DAY-TO-DAY WALK-FORWARD TRAINING & SIMULATION (20 STOCKS)
+===============================================================================
+=
+Universe: TRENT.NS, BEL.NS, ADANIPORTS.NS, RELIANCE.NS, INFY.NS, ICICIBANK.NS, 
+HDFCBANK.NS, SUNPHARMA.NS, BAJFINANCE.NS, LT.NS... (20 Liquid Equities)
+Downloading point-in-time daily bars for universe + Nifty 50 + India VIX...
+Simulation window: 2026-08-13 to 2026-11-13 (63 trading sessions)
+Enforcing strict point-in-time isolation: date > T is completely hidden from 
+agents.
+Mode: 10-Agent Committee Evaluation | Sizing Cap: Max 3 concurrent holdings 
+(6-12% NAV each)
+
+  -> [1/8] Technical Analyst auditing TITAN.NS...
+  -> [2/8] Fundamental Analyst auditing TITAN.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating TITAN.NS...
+  -> [4/8] Bull Researcher building upside thesis for TITAN.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for TITAN.NS...
+  -> [6/8] Research Manager synthesizing debate for TITAN.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing TITAN.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for TITAN.NS...
+[2026-08-13] ⚡ BOUGHT: TITAN.NS 11 shs @ ₹5,063.70 (Size: 6.0%, Stop: 
+₹4,766.40, Target: ₹5,806.95)
+  -> [1/8] Technical Analyst auditing BAJFINANCE.NS...
+  -> [2/8] Fundamental Analyst auditing BAJFINANCE.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating BAJFINANCE.NS...
+  -> [4/8] Bull Researcher building upside thesis for BAJFINANCE.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for BAJFINANCE.NS...
+  -> [6/8] Research Manager synthesizing debate for BAJFINANCE.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing BAJFINANCE.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for BAJFINANCE.NS...
+[2026-08-13] ⚡ BOUGHT: BAJFINANCE.NS 55 shs @ ₹1,090.80 (Size: 6.0%, Stop: 
+₹1,006.32, Target: ₹1,302.00)
+  -> [1/8] Technical Analyst auditing ICICIBANK.NS...
+  -> [2/8] Fundamental Analyst auditing ICICIBANK.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ICICIBANK.NS...
+  -> [4/8] Bull Researcher building upside thesis for ICICIBANK.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ICICIBANK.NS...
+  -> [6/8] Research Manager synthesizing debate for ICICIBANK.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ICICIBANK.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ICICIBANK.NS...
+[2026-08-13] ⚡ BOUGHT: ICICIBANK.NS 71 shs @ ₹1,406.80 (Size: 10.0%, Stop: 
+₹1,333.99, Target: ₹1,588.83)
+  [2026-08-13] NAV: ₹999,636.75 | Liquid Fund: ₹784,059.24 (+₹0 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,395.85 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-14] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,428.30 | 63d RS Alpha: +9.3% | RSI: 60.0)
+  [2026-08-14] NAV: ₹1,000,214.44 | Liquid Fund: ₹784,204.24 (+₹145 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,366.00 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-17] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,390.40 | 63d RS Alpha: +8.0% | RSI: 56.2)
+  [2026-08-17] NAV: ₹1,000,500.57 | Liquid Fund: ₹784,349.26 (+₹290 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,287.65 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-18] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,421.50 | 63d RS Alpha: +8.6% | RSI: 58.5)
+  [2026-08-18] NAV: ₹1,000,467.42 | Liquid Fund: ₹784,494.31 (+₹435 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,154.90 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-19] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,415.00 | 63d RS Alpha: +9.6% | RSI: 57.8)
+  [2026-08-19] NAV: ₹999,340.39 | Liquid Fund: ₹784,639.39 (+₹580 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,078.30 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-08-20] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,424.80 | 63d RS Alpha: +10.2% | RSI: 58.6)
+  [2026-08-20] NAV: ₹1,001,002.39 | Liquid Fund: ₹784,784.49 (+₹725 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,231.85 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-21] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,412.20 | 63d RS Alpha: +8.9% | RSI: 57.1)
+  [2026-08-21] NAV: ₹1,001,921.72 | Liquid Fund: ₹784,929.62 (+₹870 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,252.00 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-24] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,414.10 | 63d RS Alpha: +9.8% | RSI: 57.3)
+  [2026-08-24] NAV: ₹1,000,643.78 | Liquid Fund: ₹785,074.78 (+₹1,016 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,219.05 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-25] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,443.00 | 63d RS Alpha: +9.7% | RSI: 60.0)
+  [2026-08-25] NAV: ₹1,002,411.47 | Liquid Fund: ₹785,219.97 (+₹1,161 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,334.55 
+(EARLY_RECOVERY_PIVOT)
+  [2026-08-26] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,398.20 | 63d RS Alpha: +10.0% | RSI: 54.2)
+  [2026-08-26] NAV: ₹1,002,670.18 | Liquid Fund: ₹785,365.18 (+₹1,306 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,207.75 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-08-27] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,330.00 | 63d RS Alpha: +10.3% | RSI: 46.9)
+  [2026-08-27] NAV: ₹1,004,060.72 | Liquid Fund: ₹785,510.42 (+₹1,451 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,090.85 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-08-28] 🔭 Daily Forward-Planning Scout: M&M.NS (BASE FORMING | CMP: 
+₹3,334.00 | 63d RS Alpha: +9.4% | RSI: 47.3)
+  [2026-08-28] NAV: ₹1,002,930.20 | Liquid Fund: ₹785,655.69 (+₹1,596 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,175.65 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-08-31] 🔭 Daily Forward-Planning Scout: SUNPHARMA.NS (STAGE-2 | CMP: 
+₹1,984.80 | 63d RS Alpha: +8.4% | RSI: 64.3)
+  [2026-08-31] NAV: ₹1,003,296.38 | Liquid Fund: ₹785,800.98 (+₹1,742 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,080.40 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-01] 🔭 Daily Forward-Planning Scout: KOTAKBANK.NS (BASE FORMING | 
+CMP: ₹425.00 | 63d RS Alpha: +8.9% | RSI: 71.5)
+  [2026-09-01] NAV: ₹1,001,558.80 | Liquid Fund: ₹785,946.30 (+₹1,887 yield) | 
+Holdings: 3/3 (TITAN.NS, BAJFINANCE.NS, ICICIBANK.NS) | Nifty: ₹24,055.80 
+(ACTIVE_LIQUIDATION_BEAR)
+[2026-09-02] ▼ STOP HIT: BAJFINANCE.NS exited @ ₹1,038.68 (-5.1%). Rule: In 
+BULL_STAGE2, when a stock is trading below its 200-SMA, limit initi...
+  [2026-09-02] NAV: ₹1,000,226.86 | Liquid Fund: ₹786,091.65 (+₹2,032 yield) | 
+Holdings: 2/3 (TITAN.NS, ICICIBANK.NS) | Nifty: ₹23,914.45 
+(ACTIVE_LIQUIDATION_BEAR)
+[2026-09-03] ▼ STOP HIT: TITAN.NS exited @ ₹4,971.00 (-2.1%). Rule: In 
+BULL_STAGE2, when a stock exhibits a CFO/PAT ratio below 0.5, cap p...
+  -> [1/8] Technical Analyst auditing TITAN.NS...
+  -> [2/8] Fundamental Analyst auditing TITAN.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating TITAN.NS...
+  -> [4/8] Bull Researcher building upside thesis for TITAN.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for TITAN.NS...
+  -> [6/8] Research Manager synthesizing debate for TITAN.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing TITAN.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for TITAN.NS...
+[2026-09-03] ⚡ BOUGHT: TITAN.NS 5 shs @ ₹5,027.00 (Size: 3.0%, Stop: 
+₹4,767.20, Target: ₹5,676.50)
+  [2026-09-03] NAV: ₹999,361.44 | Liquid Fund: ₹797,933.41 (+₹2,178 yield) | 
+Holdings: 2/3 (ICICIBANK.NS, TITAN.NS) | Nifty: ₹23,873.45 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-04] NAV: ₹998,991.20 | Liquid Fund: ₹798,080.97 (+₹2,325 yield) | 
+Holdings: 2/3 (ICICIBANK.NS, TITAN.NS) | Nifty: ₹23,897.70 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-07] NAV: ₹999,319.09 | Liquid Fund: ₹798,228.56 (+₹2,473 yield) | 
+Holdings: 2/3 (ICICIBANK.NS, TITAN.NS) | Nifty: ₹23,779.15 
+(ACTIVE_LIQUIDATION_BEAR)
+[2026-09-08] ▼ STOP HIT: ICICIBANK.NS exited @ ₹1,399.40 (-0.8%). Rule: In 
+BULL_STAGE2, when a stock exhibits high RS Alpha but fails to recla...
+  [2026-09-08] NAV: ₹997,279.10 | Liquid Fund: ₹872,616.19 (+₹2,621 yield) | 
+Holdings: 1/3 (TITAN.NS) | Nifty: ₹23,635.10 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+  [2026-09-09] NAV: ₹997,530.47 | Liquid Fund: ₹872,777.56 (+₹2,782 yield) | 
+Holdings: 1/3 (TITAN.NS) | Nifty: ₹23,431.50 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-09-10] ⚡ BOUGHT: ADANIPORTS.NS 28 shs @ ₹1,768.00 (Size: 5.0%, Stop: 
+₹1,651.27, Target: ₹2,059.82)
+  [2026-09-10] NAV: ₹997,688.46 | Liquid Fund: ₹872,938.96 (+₹2,943 yield) | 
+Holdings: 2/3 (TITAN.NS, ADANIPORTS.NS) | Nifty: ₹23,477.80 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-11] NAV: ₹997,697.19 | Liquid Fund: ₹873,100.39 (+₹3,105 yield) | 
+Holdings: 2/3 (TITAN.NS, ADANIPORTS.NS) | Nifty: ₹23,398.10 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-15] NAV: ₹995,668.75 | Liquid Fund: ₹873,261.85 (+₹3,266 yield) | 
+Holdings: 2/3 (TITAN.NS, ADANIPORTS.NS) | Nifty: ₹23,118.60 
+(ACTIVE_LIQUIDATION_BEAR)
+[2026-09-16] ▼ STOP HIT: TITAN.NS exited @ ₹4,847.80 (-3.9%). Rule: In 
+BULL_STAGE2, when a stock exhibits a CFO/PAT ratio below 0.5, cap p...
+  [2026-09-16] NAV: ₹996,032.03 | Liquid Fund: ₹873,423.34 (+₹3,428 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,217.60 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-17] NAV: ₹996,599.55 | Liquid Fund: ₹873,584.86 (+₹3,589 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,270.60 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-18] NAV: ₹999,160.70 | Liquid Fund: ₹873,746.41 (+₹3,751 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,346.40 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-21] NAV: ₹998,289.08 | Liquid Fund: ₹873,907.99 (+₹3,912 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,414.30 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-22] NAV: ₹998,671.89 | Liquid Fund: ₹874,069.60 (+₹4,074 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,329.00 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-23] NAV: ₹999,177.93 | Liquid Fund: ₹874,231.24 (+₹4,236 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,446.80 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-24] NAV: ₹998,723.60 | Liquid Fund: ₹874,392.91 (+₹4,397 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,063.10 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-25] NAV: ₹998,960.90 | Liquid Fund: ₹874,554.61 (+₹4,559 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,140.50 (ACTIVE_LIQUIDATION_BEAR)
+[2026-09-28] ▼ STOP HIT: ADANIPORTS.NS exited @ ₹1,743.70 (-1.7%). Rule: In 
+BULL_STAGE2, when an asset exhibits high group-level beta, reduce p...
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+  [2026-09-28] NAV: ₹997,807.29 | Liquid Fund: ₹898,026.56 (+₹4,721 yield) | 
+Holdings: 0/3 (None) | Nifty: ₹22,780.25 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-09-29] ⚡ BOUGHT: ADANIPORTS.NS 27 shs @ ₹1,822.00 (Size: 5.0%, Stop: 
+₹1,693.90, Target: ₹2,142.25)
+  [2026-09-29] NAV: ₹997,890.47 | Liquid Fund: ₹898,192.63 (+₹4,887 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,716.20 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-09-30] NAV: ₹997,416.67 | Liquid Fund: ₹898,358.73 (+₹5,053 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,620.45 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-01] NAV: ₹995,949.30 | Liquid Fund: ₹898,524.86 (+₹5,219 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,421.95 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-05] NAV: ₹997,092.87 | Liquid Fund: ₹898,691.03 (+₹5,385 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,555.75 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-06] NAV: ₹997,512.87 | Liquid Fund: ₹898,857.23 (+₹5,551 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,776.10 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-07] NAV: ₹996,780.00 | Liquid Fund: ₹899,023.46 (+₹5,718 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,603.05 (ACTIVE_LIQUIDATION_BEAR)
+[2026-10-08] ▼ STOP HIT: ADANIPORTS.NS exited @ ₹1,708.00 (-6.6%). Rule: In 
+BULL_STAGE2, when an asset exhibits high-beta group sensitivity and...
+  [2026-10-08] NAV: ₹995,738.77 | Liquid Fund: ₹899,189.72 (+₹5,884 yield) | 
+Holdings: 0/3 (None) | Nifty: ₹22,231.80 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-10-09] ⚡ BOUGHT: ADANIPORTS.NS 28 shs @ ₹1,761.00 (Size: 5.0%, Stop: 
+₹1,615.89, Target: ₹2,123.78)
+  [2026-10-09] NAV: ₹995,821.98 | Liquid Fund: ₹899,356.01 (+₹6,050 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,520.45 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-12] NAV: ₹995,792.30 | Liquid Fund: ₹899,522.33 (+₹6,216 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,363.35 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-13] NAV: ₹996,210.65 | Liquid Fund: ₹899,688.68 (+₹6,383 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,721.95 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-14] NAV: ₹995,976.63 | Liquid Fund: ₹899,855.06 (+₹6,549 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,622.70 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-15] NAV: ₹995,989.04 | Liquid Fund: ₹900,021.47 (+₹6,716 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,997.35 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-16] NAV: ₹996,368.28 | Liquid Fund: ₹900,187.91 (+₹6,882 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,146.15 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-19] NAV: ₹996,960.35 | Liquid Fund: ₹900,354.38 (+₹7,049 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,888.95 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-21] NAV: ₹996,645.25 | Liquid Fund: ₹900,520.88 (+₹7,215 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,811.35 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-22] NAV: ₹996,845.38 | Liquid Fund: ₹900,687.41 (+₹7,382 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,687.65 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-23] NAV: ₹995,687.55 | Liquid Fund: ₹900,853.98 (+₹7,548 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,600.00 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-26] NAV: ₹997,248.55 | Liquid Fund: ₹901,020.58 (+₹7,715 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,753.20 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-27] NAV: ₹997,471.18 | Liquid Fund: ₹901,187.21 (+₹7,881 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,749.75 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-28] NAV: ₹997,828.24 | Liquid Fund: ₹901,353.87 (+₹8,048 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,698.85 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-29] NAV: ₹1,001,094.53 | Liquid Fund: ₹901,520.56 (+₹8,215 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,936.75 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-30] NAV: ₹1,000,645.25 | Liquid Fund: ₹901,687.28 (+₹8,381 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,053.10 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing KOTAKBANK.NS...
+  -> [2/8] Fundamental Analyst auditing KOTAKBANK.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating KOTAKBANK.NS...
+  -> [4/8] Bull Researcher building upside thesis for KOTAKBANK.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for KOTAKBANK.NS...
+  -> [6/8] Research Manager synthesizing debate for KOTAKBANK.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing KOTAKBANK.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for KOTAKBANK.NS...
+[2026-11-02] ⚡ BOUGHT: KOTAKBANK.NS 131 shs @ ₹458.35 (Size: 6.0%, Stop: 
+₹428.80, Target: ₹532.23)
+  -> [1/8] Technical Analyst auditing TCS.NS...
+  -> [2/8] Fundamental Analyst auditing TCS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating TCS.NS...
+  -> [4/8] Bull Researcher building upside thesis for TCS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for TCS.NS...
+  -> [6/8] Research Manager synthesizing debate for TCS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing TCS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for TCS.NS...
+[2026-11-02] ⚡ BOUGHT: TCS.NS 48 shs @ ₹2,501.70 (Size: 12.0%, Stop: 
+₹2,289.24, Target: ₹3,032.85)
+  [2026-11-02] NAV: ₹1,000,620.49 | Liquid Fund: ₹768,583.04 (+₹8,548 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,440.80 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-03] 🔭 Daily Forward-Planning Scout: BHARTIARTL.NS (BASE FORMING | 
+CMP: ₹2,065.00 | 63d RS Alpha: +8.1% | RSI: 73.7)
+  [2026-11-03] NAV: ₹1,001,824.34 | Liquid Fund: ₹768,725.18 (+₹8,690 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,810.85 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-04] 🔭 Daily Forward-Planning Scout: BHARTIARTL.NS (BASE FORMING | 
+CMP: ₹2,067.60 | 63d RS Alpha: +7.2% | RSI: 73.9)
+  [2026-11-04] NAV: ₹999,456.74 | Liquid Fund: ₹768,867.34 (+₹8,832 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,960.60 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-05] 🔭 Daily Forward-Planning Scout: BHARTIARTL.NS (BASE FORMING | 
+CMP: ₹2,056.90 | 63d RS Alpha: +6.0% | RSI: 71.5)
+  [2026-11-05] NAV: ₹1,002,748.93 | Liquid Fund: ₹769,009.53 (+₹8,975 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹24,536.60 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-06] 🔭 Daily Forward-Planning Scout: ICICIBANK.NS (STAGE-2 | CMP: 
+₹1,571.20 | 63d RS Alpha: +8.7% | RSI: 79.7)
+  [2026-11-06] NAV: ₹1,006,184.54 | Liquid Fund: ₹769,151.74 (+₹9,117 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹25,030.35 
+(ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-11-09] ⚡ BOUGHT: ADANIPORTS.NS 31 shs @ ₹1,942.70 (Size: 6.0%, Stop: 
+₹1,789.28, Target: ₹2,326.25)
+  [2026-11-09] NAV: ₹1,005,138.30 | Liquid Fund: ₹763,280.90 (+₹9,259 yield) | 
+Holdings: 3/3 (KOTAKBANK.NS, TCS.NS, ADANIPORTS.NS) | Nifty: ₹25,044.65 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-11] 🔭 Daily Forward-Planning Scout: HDFCBANK.NS (BASE FORMING | 
+CMP: ₹806.60 | 63d RS Alpha: +7.4% | RSI: 76.9)
+  [2026-11-11] NAV: ₹1,005,088.56 | Liquid Fund: ₹763,422.05 (+₹9,400 yield) | 
+Holdings: 3/3 (KOTAKBANK.NS, TCS.NS, ADANIPORTS.NS) | Nifty: ₹25,255.05 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-12] 🔭 Daily Forward-Planning Scout: HDFCBANK.NS (BASE FORMING | 
+CMP: ₹812.30 | 63d RS Alpha: +7.9% | RSI: 77.8)
+  [2026-11-12] NAV: ₹1,004,870.83 | Liquid Fund: ₹763,563.23 (+₹9,541 yield) | 
+Holdings: 3/3 (KOTAKBANK.NS, TCS.NS, ADANIPORTS.NS) | Nifty: ₹25,299.35 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-13] 🔭 Daily Forward-Planning Scout: ICICIBANK.NS (STAGE-2 | CMP: 
+₹1,583.60 | 63d RS Alpha: +9.5% | RSI: 75.8)
+  [2026-11-13] NAV: ₹1,002,266.79 | Liquid Fund: ₹763,704.44 (+₹9,683 yield) | 
+Holdings: 3/3 (KOTAKBANK.NS, TCS.NS, ADANIPORTS.NS) | Nifty: ₹25,144.30 
+(ACTIVE_LIQUIDATION_BEAR)
+
+===============================================================================
+=
+  DAY-TO-DAY WALK-FORWARD SIMULATION EXECUTIVE SCORECARD
+===============================================================================
+=
+┌─────────────────────────────────┬───────────────────┬───────────────────────┐
+│ Metric                          │   Strategy Result │  Benchmark / Baseline │
+├─────────────────────────────────┼───────────────────┼───────────────────────┤
+│ Final Portfolio NAV             │     ₹1,002,266.79 │         ₹1,000,000.00 │
+│ Strategy Total Return           │            +0.23% │     +3.07% (Nifty 50) │
+│ Alpha vs Nifty 50               │            -2.84% │                 0.00% │
+│ Liquid Fund Yield Earned        │        +₹9,682.65 │      0.00 (Cash Drag) │
+│ Maximum Drawdown                │            -0.84% │                     — │
+│ Total Trades Closed             │                 7 │                     — │
+│ Win Rate %                      │   14.3% (1W / 6L) │                 50.0% │
+│ Rules Learned From Mistakes     │                 0 │       0 (Naive Prior) │
+│ Subsequent Bad Trades Vetoed    │                 0 │                     0 │
+└─────────────────────────────────┴───────────────────┴───────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✓ Closed-Loop Verification: The system synthesized 0 guardrail rules from   │
+│ mistakes, which subsequently prevented 0 risky trades from suffering        │
+│ similar losses.                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✓ Institutional Memory Synchronized: All day-to-day simulated learnings and 
+post-mortems have been permanently saved into the live SQLite database 
+(`paper_portfolio_india.db`).

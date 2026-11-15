@@ -214,8 +214,8 @@ def calculate_technical_indicators(ticker: str) -> Dict[str, Any]:
     """Fetches indicators with timeout, defaulting to realistic proxy if offline."""
     ticker_norm = normalize_ticker(ticker)
     
-    # Sensible realistic defaults based on typical stock price
-    default_price = 285.0 if "BEL" in ticker_norm else (6500.0 if "TRENT" in ticker_norm else 1000.0)
+    # Safe conservative fallback if network or yfinance times out (> 5s)
+    # Never fabrication of fake bullish breakout metrics
     fallback = {
         "ticker": ticker_norm,
         "latest_close": default_price,
@@ -223,15 +223,16 @@ def calculate_technical_indicators(ticker: str) -> Dict[str, Any]:
         "sma_50": round(default_price * 0.95, 2),
         "sma_150": round(default_price * 0.91, 2),
         "sma_200": round(default_price * 0.88, 2),
-        "rsi_14": 58.4,
+        "rsi_14": 45.0,
         "atr_14": round(default_price * 0.024, 2),
-        "volume_ratio_20d": 1.35,
+        "volume_ratio_20d": 0.0,
         "high_52w": round(default_price * 1.08, 2),
         "low_52w": round(default_price * 0.65, 2),
-        "dist_52w_high_pct": -7.4,
-        "rs_alpha_63d": 0.082,
+        "dist_52w_high_pct": -15.0,
+        "rs_alpha_63d": -0.05,
         "circuit_limit_warning": False,
-        "stage2_uptrend": True
+        "stage2_uptrend": False,
+        "data_fetch_failed": True
     }
 
     result = run_with_timeout(lambda: _fetch_technical_indicators_raw(ticker_norm), timeout_sec=5.0, default=fallback)

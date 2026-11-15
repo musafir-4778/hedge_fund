@@ -44,6 +44,7 @@ jobs:
       - name: Execute Autonomous Market Cycle
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_API_KEYS: ${{ secrets.GOOGLE_API_KEYS }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           PYTHONUNBUFFERED: "1"
@@ -75,7 +76,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action [Wealth Agent]"
-          git add paper_portfolio_india.db* || true
+          sqlite3 paper_portfolio_india.db "PRAGMA wal_checkpoint(TRUNCATE);" || true
+          git add -f paper_portfolio_india.db || true
           if git diff --staged --quiet; then
             echo "No database changes to commit."
           else

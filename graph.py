@@ -21,6 +21,7 @@ from database import (
     get_all_positions,
     get_top_actionable_rules,
     get_sector_actionable_rules,
+    get_regime_balanced_rules,
     format_agent_scorecard_str,
     get_ist_now,
 )
@@ -89,6 +90,17 @@ def data_and_memory_node(state: InvestmentFirmState) -> Dict[str, Any]:
     if state.get("technicals") and "latest_close" in state["technicals"]:
         current_prices[ticker] = state["technicals"]["latest_close"]
 
+    invested_val = sum(p["qty"] * (current_prices.get(p["ticker"]) or p["avg_price"]) for p in positions)
+    total_nav = cash + liquid_bal + invested_val
+
+    # Calculate sector weights
+    sector_weights: Dict[str, float] = {}
+    for p in positions:
+        sec = p.get("sector", "Other")
+        sector_weights[sec] = sector_weights.get(sec, 0.0) + (p["qty"] * (current_prices.get(p["ticker"]) or p["avg_price"]))
+    if total_nav > 0:
+        sector_weights = {k: round(v / total_nav, 4) for k, v in sector_weights.items()}
+
     as_of_date = state.get("point_in_time_date") or get_ist_now()
     tax_summary = format_portfolio_tax_summary(positions, current_prices, as_of_date, fy_exempt)
     treasury_str = (
@@ -112,7 +124,7 @@ def data_and_memory_node(state: InvestmentFirmState) -> Dict[str, Any]:
     # 3. Technicals & Risk Boundaries (Preserve Point-In-Time if pre-hydrated)
     if state.get("technicals") and "latest_close" in state["technicals"]:
         technicals = dict(state["technicals"])
-        if "max_loss_rupees" not in technicals:
+        if "hard_stop_price" not in technicals:
             risk_bounds = calculate_risk_boundaries(
                 latest_close=technicals["latest_close"],
                 atr_14=technicals["atr_14"],
@@ -128,19 +140,109 @@ def data_and_memory_node(state: InvestmentFirmState) -> Dict[str, Any]:
         )
         technicals.update(risk_bounds)
 
-    # 4. Fundamentals (Preserve Point-In-Time if pre-hydrated)
-    fundamentals = state.get("fundamentals") or fetch_fundamental_metrics(ticker)
+    # 4. Fundamentals (Preserve Point-In-Time if pre-hydrated or use backtest neutral proxy)
+    pit_date = state.get("point_in_time_date") or ""
+    if pit_date and str(pit_date) < "2025-11-01" and not state.get("fundamentals"):
+        # Backtest Mode Proxy: Prevents 2026 yfinance info lookahead bias from corrupting historical backtests
+        fundamentals = {
+            "sector": state.get("sector") or "Industrials",
+            "industry": "General",
+            "market_cap_cr": 50000.0,
+            "roe": 0.165,
+            "debt_to_equity": 30.0,
+            "revenue_growth": 0.15,
+            "earnings_growth": 0.15,
+            "pe_ratio": 22.0,
+            "forward_pe": 18.0,
+            "operating_cash_flow": 2000000000.0,
+            "net_income": 1500000000.0,
+            "promoter_holding_pct": 55.0,
+            "backtest_mode": True
+        }
+    else:
+        fundamentals = state.get("fundamentals") or fetch_fundamental_metrics(ticker)
+
     sector = state.get("sector") or fundamentals.get("sector", "Industrials")
 
     # 5. News & Calendar (Preserve Point-In-Time if pre-hydrated)
     news = state.get("recent_news") or fetch_recent_stock_news(ticker)
 
-    # 6. Episodic Memory & Historical Scorecard (Combined Sector-Specific + General Guardrails)
-    general_rules = get_top_actionable_rules(limit=3)
-    sector_rules = get_sector_actionable_rules(sector, limit=3)
-    all_rules = list(dict.fromkeys(sector_rules + general_rules))
-    lessons_str = "\n".join([f"- {r}" for r in all_rules]) if all_rules else "No past trade failure rules recorded yet."
+    # 6. Episodic Memory & Historical Scorecard (Balanced Dual-Polarity Retrieval)
+    balanced_rules = get_regime_balanced_rules(sector=sector, market_regime=regime, limit=5)
+    lessons_str = "\n".join([f"- {r}" for r in balanced_rules]) if balanced_rules else "No past trade failure rules recorded yet."
     scorecard_str = format_agent_scorecard_str()
+
+    # 7. Deterministic Zero-Token Hard Veto Evaluation
+    from state import TradeDecision
+    latest_close = float(technicals.get("latest_close", 100.0))
+    hard_stop = float(technicals.get("hard_stop_price", round(latest_close * 0.95, 2)))
+    min_target = float(technicals.get("min_valid_target", round(latest_close * 1.15, 2)))
+    sma_50 = float(technicals.get("sma_50", 0.0) or 0.0)
+    industry = fundamentals.get("industry", "")
+    is_financial = any(fin in sector.lower() or fin in industry.lower()
+                       for fin in ["bank", "financial", "nbfc", "lending", "insurance"])
+    earnings_growth = float(fundamentals.get("earnings_growth", 0.0) or 0.0)
+    rs_alpha = float(technicals.get("rs_alpha_63d", 0.0) or 0.0)
+    is_defensive = sector.lower() in ["healthcare", "pharmaceuticals", "pharma"] or "pharma" in industry.lower() or "defense" in industry.lower()
+    has_strong_rs = rs_alpha >= 0.03 and float(fundamentals.get("operating_cash_flow", 0.0) or 0.0) > 0
+
+    hard_veto_decision = None
+    # Hard Veto 1: Severe non-financial earnings collapse (< -20%)
+    if not is_financial and not (is_defensive and has_strong_rs) and earnings_growth < -0.20:
+        logger.info(f"[Zero-Token Short-Circuit] Hard Veto 1 triggered for {ticker}: Severe earnings contraction ({earnings_growth*100:.1f}% < -20%).")
+        hard_veto_decision = TradeDecision(
+            ticker=ticker,
+            action="HOLD",
+            conviction="LOW",
+            allocation_pct=0.0,
+            entry_price=latest_close,
+            stop_loss_price=hard_stop,
+            target_price=min_target,
+            holding_horizon_days=30,
+            rationale=f"Deterministic Hard Veto: Severe earnings contraction of {earnings_growth*100:.1f}% (< -20%) violates capital preservation rules."
+        )
+
+    # Hard Veto 2: Bear Market breakdown below 50-day SMA
+    bm_close = float(benchmark_metrics.get("nifty_close", 0.0) or 0.0)
+    bm_sma50 = float(benchmark_metrics.get("nifty_sma50", 0.0) or 0.0)
+    benchmark_downtrend = (bm_close > 0 and bm_sma50 > 0 and bm_close < bm_sma50) or (regime == "BEAR_RISK_OFF")
+    is_structural_breakdown = (sma_50 > 0 and latest_close < sma_50 * 0.97) or (sma_50 > 0 and latest_close < sma_50 and rs_alpha <= 0.0)
+
+    if not hard_veto_decision and benchmark_downtrend and is_structural_breakdown:
+        logger.info(f"[Zero-Token Short-Circuit] Hard Veto 2 triggered for {ticker}: Benchmark downtrend and Close ₹{latest_close} < SMA_50 ₹{sma_50}.")
+        hard_veto_decision = TradeDecision(
+            ticker=ticker,
+            action="HOLD",
+            conviction="LOW",
+            allocation_pct=0.0,
+            entry_price=latest_close,
+            stop_loss_price=hard_stop,
+            target_price=min_target,
+            holding_horizon_days=30,
+            rationale=f"Deterministic Hard Veto: In benchmark downtrend, Close (₹{latest_close}) broke below 50-SMA (₹{sma_50}) without positive RS Alpha."
+        )
+
+    if hard_veto_decision:
+        return {
+            "ticker": ticker,
+            "sector": sector,
+            "market_regime": regime,
+            "india_vix": india_vix,
+            "benchmark_context": benchmark_metrics,
+            "portfolio_context": p_ctx,
+            "technicals": technicals,
+            "fundamentals": fundamentals,
+            "recent_news": news,
+            "episodic_lessons": lessons_str,
+            "agent_scorecard": scorecard_str,
+            "tax_context": tax_summary,
+            "treasury_context": treasury_str,
+            "debate_round": 0,
+            "bull_arguments": [],
+            "bear_arguments": [],
+            "hard_veto_triggered": True,
+            "trade_decision": hard_veto_decision.model_dump(),
+        }
 
     return {
         "ticker": ticker,
@@ -159,7 +261,15 @@ def data_and_memory_node(state: InvestmentFirmState) -> Dict[str, Any]:
         "debate_round": 0,
         "bull_arguments": [],
         "bear_arguments": [],
+        "hard_veto_triggered": False,
     }
+
+
+def check_hard_veto(state: InvestmentFirmState) -> str:
+    """Zero-Token Short-Circuit: routes directly to END if deterministic hard veto was triggered."""
+    if state.get("hard_veto_triggered", False):
+        return "END"
+    return "technical_analyst"
 
 
 def should_continue_debate(state: InvestmentFirmState) -> str:
@@ -196,8 +306,15 @@ def build_investment_graph(checkpointer: Optional[Any] = None):
     # Set Entry Point
     workflow.set_entry_point("data_and_memory")
 
-    # Wire Stage 1 sequentially
-    workflow.add_edge("data_and_memory", "technical_analyst")
+    # Wire conditional edge from data_and_memory (Short-circuit directly to END on hard veto)
+    workflow.add_conditional_edges(
+        "data_and_memory",
+        check_hard_veto,
+        {
+            "END": END,
+            "technical_analyst": "technical_analyst"
+        }
+    )
     workflow.add_edge("technical_analyst", "fundamental_analyst")
     workflow.add_edge("fundamental_analyst", "news_macro_analyst")
 
@@ -263,6 +380,8 @@ def run_investment_committee(
         "tax_context": None,
         "treasury_context": None,
         "trade_decision": None,
+        "point_in_time_date": None,
+        "hard_veto_triggered": False,
     }
 
     if point_in_time_state:

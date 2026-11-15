@@ -78,8 +78,9 @@ def execute_buy_decision(
 
     acc = get_portfolio_account()
     cash = acc["cash"]
+    liquid_bal = float(acc.get("liquid_fund_balance", 0.0) or 0.0)
     invested_val = sum(p["qty"] * p["avg_price"] for p in positions)
-    total_nav = cash + invested_val
+    total_nav = cash + liquid_bal + invested_val
 
     # Check Sector Concentration Cap (30%)
     sector_invested = sum(p["qty"] * p["avg_price"] for p in positions if p.get("sector") == sector)

@@ -62,7 +62,7 @@ def notify_morning_docket(docket: List[Dict[str, Any]], regime: str, nifty_close
     """Sends 08:30 AM pre-open discovery summary."""
     regime_emoji = "▲" if "BULL" in regime else ("▼" if "BEAR" in regime else "◆")
     tickers_list = "\n".join([
-        f"  • <b>{d.get('ticker')}</b> ({d.get('sector', 'General')}) | RS Alpha: {d.get('rs_alpha', 0)*100:+.1f}%"
+        f"  • <b>{d.get('ticker')}</b> ({d.get('sector', 'General')}) | RS Alpha: {d.get('rs_alpha_63d', d.get('rs_alpha', 0))*100:+.1f}%"
         for d in docket[:5]
     ]) if docket else "  • <i>No candidates cleared the Stage-2 momentum hurdle today.</i>"
 

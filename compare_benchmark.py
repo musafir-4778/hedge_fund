@@ -8,7 +8,7 @@ blocks = {
     "Block 3 (Capex Supercycle & Election)": ("2023-04-01", "2024-09-01", 8.92),
     "Block 4 (Bear Slide & Valuation De-rating)": ("2025-12-01", "2026-08-31", 2.57),
     "OOS Window A (Out-of-Sample Plateau)": ("2024-10-01", "2025-11-30", 5.95),
-    "OOS Window B (Terminal Out-of-Sample)": ("2026-09-01", "2026-11-13", 0.0),
+    "OOS Window B (Terminal Out-of-Sample)": ("2026-09-01", "2026-11-13", 1.83),
 }
 
 # Download full Nifty 50 history

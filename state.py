@@ -13,34 +13,46 @@ class TradeDecision(BaseModel):
     ticker: str = Field(description="NSE ticker with .NS suffix, e.g., BEL.NS")
     action: Literal["BUY", "SELL", "HOLD"] = Field(description="Execution decision")
     conviction: Literal["HIGH", "MEDIUM", "LOW"] = Field(description="Conviction level")
-    allocation_pct: float = Field(ge=0.0, le=0.12, description="Max 12% single-stock cap")
+    allocation_pct: float = Field(ge=0.0, le=0.12, description="0.04-0.06 in Bear/Recovery regimes; 0.08-0.12 in confirmed Bull Stage-2")
     entry_price: float = Field(description="Latest close / recommended entry price in INR")
-    stop_loss_price: float = Field(description="Must be <= entry_price - 2 * ATR_14")
-    target_price: float = Field(description="Must satisfy >= 2.5x risk-to-reward ratio")
-    holding_horizon_days: int = Field(default=30, description="Max holding window before review")
-    rationale: str = Field(description="Concise 3-sentence executive summary")
+    stop_loss_price: float = Field(description="Must be <= pre-calculated beta-adaptive hard_stop_price (2.5x to 3.0x ATR_14)")
+    target_price: float = Field(description="Must satisfy >= 2.5x risk-to-reward ratio over stop distance")
+    holding_horizon_days: int = Field(default=30, description="Review horizon in trading days (winners trailed via ATR)")
+    rationale: str = Field(description="Concise 3-sentence executive summary citing conviction score and regime leeway")
 
 
 class TradePostMortem(BaseModel):
     """Structured output contract for the Post-Mortem Reflection Auditor."""
-    outcome: Literal["WIN", "LOSS", "BREAKEVEN"] = Field(description="Trade outcome category")
-    pnl_pct: float = Field(description="Net realized percentage gain/loss")
+    outcome: Literal["WIN", "LOSS", "BREAKEVEN", "MISSED_WINNER", "MISSED_OPPORTUNITY"] = Field(description="Trade or veto outcome category")
+    pnl_pct: float = Field(description="Net realized percentage gain/loss (or missed rally %)")
+    applicable_regime: Literal["BULL_STAGE2", "CHOPPY_RANGE", "BEAR_RISK_OFF", "ALL_REGIMES"] = Field(
+        default="ALL_REGIMES",
+        description="The specific market regime where this rule applies. Bear-market rules MUST NOT be tagged ALL_REGIMES."
+    )
+    rule_polarity: Literal["DEFENSIVE_GUARDRAIL", "OPPORTUNITY_LEEWAY"] = Field(
+        default="DEFENSIVE_GUARDRAIL",
+        description="DEFENSIVE_GUARDRAIL if learned from a loss; OPPORTUNITY_LEEWAY if learned from a winner or missed rally."
+    )
     primary_driver: Literal[
         "TECHNICAL_BREAKOUT_VALID",
         "FALSE_BREAKOUT_LOW_VOLUME",
         "FUNDAMENTAL_CATALYST_HIT",
         "EARNINGS_OR_SEBI_NEWS_SHOCK",
         "NIFTY_MACRO_SECTOR_DRAG",
-        "STOP_LOSS_TOO_TIGHT"
-    ] = Field(description="Attributed primary driver of trade outcome")
+        "STOP_LOSS_TOO_TIGHT",
+        "OVER_DEFENSIVE_VETO_PARALYSIS",
+        "FALSE_POSITIVE_VETO_MISSED_RALLY"
+    ] = Field(description="Attributed primary driver of outcome")
     accurate_agent: Literal[
         "TECHNICAL", "FUNDAMENTAL", "NEWS_MACRO", "BULL_BEAR_DEBATE", "RISK_COMMITTEE", "NONE"
     ] = Field(description="Agent whose thesis was most accurate")
     failed_agent: Literal[
         "TECHNICAL", "FUNDAMENTAL", "NEWS_MACRO", "BULL_BEAR_DEBATE", "RISK_COMMITTEE", "NONE"
     ] = Field(description="Agent whose thesis had the fatal blindspot")
-    root_cause_analysis: str = Field(description="2-sentence diagnosis of why the thesis succeeded or failed.")
-    actionable_rule: str = Field(description="Concrete 1-sentence guardrail rule for future committee votes.")
+    root_cause_analysis: str = Field(description="2-sentence diagnosis of why the thesis succeeded, failed, or missed upside.")
+    actionable_rule: str = Field(description="Concrete 1-sentence conditional scoring rule (e.g., 'In [Regime], if [Condition], adjust conviction by [X] rather than issuing a blanket veto').")
+    market_regime: Optional[str] = Field(default="ALL", description="Alias for applicable_regime for backward compatibility")
+    rule_type: Optional[str] = Field(default="RISK_GUARDRAIL", description="Alias for rule_polarity for backward compatibility")
 
 
 class RiskCommitteeVerdict(BaseModel):
@@ -91,4 +103,8 @@ class InvestmentFirmState(TypedDict):
     
     # Stage 4: Final Structured Decision
     trade_decision: Optional[Dict[str, Any]]
+    
+    # Point-in-time and Short-circuit State Flags
+    point_in_time_date: Optional[str]
+    hard_veto_triggered: Optional[bool]
 

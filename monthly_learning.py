@@ -29,6 +29,7 @@ from config import (
     ATR_STOP_MULTIPLIER,
     MIN_RISK_REWARD_RATIO,
     BENCHMARK_TICKER,
+    VIX_TICKER,
 )
 from database import (
     save_thesis_snapshot,
@@ -38,6 +39,10 @@ from database import (
     format_agent_scorecard_str,
     get_portfolio_account,
     reset_portfolio_account,
+    update_cash,
+    add_position,
+    remove_position,
+    log_trade,
     log_tax_deduction,
     sweep_cash_to_liquid_fund,
     un_sweep_liquid_fund,
@@ -182,7 +187,7 @@ def run_monthly_agent_learning_simulation(
 ) -> Dict[str, Any]:
     """Runs month-by-month walk-forward live multi-agent committee debates with up to 3 active holdings."""
     universe = stocks or DEFAULT_10_STOCKS
-    all_symbols = [BENCHMARK_TICKER] + universe
+    all_symbols = [BENCHMARK_TICKER, VIX_TICKER] + universe
 
     if reset_db_first:
         reset_portfolio_account(clean_trades=True, initial_capital=INITIAL_CAPITAL_INR)
@@ -245,6 +250,8 @@ def run_monthly_agent_learning_simulation(
     cum_stcg_paid = 0.0
     cum_ltcg_paid = 0.0
     cum_fy_exempt_used = 0.0
+    cum_stcl_carryforward = 0.0
+    current_fy_tracker = None
     positions: Dict[str, Dict[str, Any]] = {}
     monthly_performance_log: List[Dict[str, Any]] = []
 
@@ -274,20 +281,29 @@ def run_monthly_agent_learning_simulation(
             regime = "BEAR_RISK_OFF"
 
         high_52w = float(nifty_pit["High"].max()) if "High" in nifty_pit.columns else nifty_close
+
+        vix_df = data_by_ticker.get(VIX_TICKER)
+        if vix_df is not None and not vix_df.empty:
+            vix_pit = vix_df.loc[:current_monday]
+            india_vix = float(vix_pit["Close"].dropna().iloc[-1]) if not vix_pit.empty and len(vix_pit["Close"].dropna()) > 0 else 15.5
+        else:
+            india_vix = 15.5
+        india_vix = round(india_vix, 2)
+
         pit_benchmark_metrics = {
             "nifty_close": round(nifty_close, 2),
             "nifty_sma50": round(nifty_sma50, 2),
             "nifty_sma200": round(nifty_sma200, 2),
             "nifty_dist_52w_high_pct": round(((nifty_close - high_52w) / high_52w) * 100.0, 2),
             "nifty_trend_63d_pct": nifty_trend_63d,
-            "india_vix": 15.5,
+            "india_vix": india_vix,
             "regime": regime
         }
 
         console.print(
             f"[bold cyan]📊 Benchmark Point-in-Time Metrics ({monday_str}):[/bold cyan] "
             f"Nifty 50: ₹{nifty_close:,.2f} | 50 SMA: ₹{nifty_sma50:,.2f} | 200 SMA: ₹{nifty_sma200:,.2f} | "
-            f"63d Trend: {nifty_trend_63d:+.1f}% | VIX: 15.5"
+            f"63d Trend: {nifty_trend_63d:+.1f}% | VIX: {india_vix}"
         )
 
         # -------------------------------------------------------------
@@ -478,7 +494,7 @@ def run_monthly_agent_learning_simulation(
                     "volume_ratio_20d": cand_ind["volume_ratio"],
                     "dist_52w_high_pct": 0.0,
                     "rs_alpha_63d": cand_ind["rs_alpha_63d"],
-                    "circuit_limit_warning": "NORMAL",
+                    "circuit_limit_warning": False,
                     "stage2_uptrend": cand_ind["stage2_uptrend"],
                 }
 
@@ -490,6 +506,10 @@ def run_monthly_agent_learning_simulation(
                 stop_loss = round(entry_price - (stop_mult * atr), 2)
                 risk_per_share = round(entry_price - stop_loss, 2)
                 target_price = round(entry_price + (risk_per_share * MIN_RISK_REWARD_RATIO), 2)
+
+                pit_technicals["hard_stop_price"] = stop_loss
+                pit_technicals["min_valid_target"] = target_price
+                pit_technicals["risk_per_share"] = risk_per_share
 
                 max_portfolio_risk_inr = portfolio_nav * MAX_PORTFOLIO_RISK_PER_TRADE
                 qty_by_risk = int(max_portfolio_risk_inr / max(risk_per_share, 1.0))
@@ -511,7 +531,7 @@ def run_monthly_agent_learning_simulation(
                 historical_macro_summary = (
                     f"Historical Point-In-Time Macro & Benchmark Context as of {monday_str}:\n"
                     f"- Benchmark Metrics: Nifty 50 Close ₹{nifty_close:,.2f} | 50 SMA: ₹{nifty_sma50:,.2f} | 200 SMA: ₹{nifty_sma200:,.2f}\n"
-                    f"- Benchmark 63-day Trend: {nifty_trend_63d:+.1f}% | Benchmark Volatility: India VIX ~15.5\n"
+                    f"- Benchmark 63-day Trend: {nifty_trend_63d:+.1f}% | Benchmark Volatility: India VIX ~{india_vix}\n"
                     f"- Sector: {cand_sec} | Stock Relative Strength Alpha vs Nifty: {cand_ind.get('rs_alpha_63d', 0.0)*100:+.1f}%\n"
                     f"- Corporate Governance & Solvency: Audited via point-in-time regulatory filings.\n"
                     f"- Instruction: The committee must independently deduce the prevailing market regime and macro risk posture."
@@ -519,7 +539,7 @@ def run_monthly_agent_learning_simulation(
 
                 pit_state = {
                     "market_regime": regime,
-                    "india_vix": 15.5,
+                    "india_vix": india_vix,
                     "benchmark_context": pit_benchmark_metrics,
                     "technicals": pit_technicals,
                     "sector": cand_sec,
@@ -570,6 +590,7 @@ def run_monthly_agent_learning_simulation(
                         console.print(f"[cyan]🏦 Treasury Un-Sweep:[/] Redeemed ₹{un_sweep:,.2f} from Liquid Mutual Fund for {cand_sym} delivery settlement.")
 
                     cash -= total_entry_cost
+                    update_cash(cash)
 
                     console.print(f"[bold green]✔ EXECUTED BUY ORDER:[/] {allocated_qty} shares of {cand_sym} @ ₹{entry_price:,.2f} (Total Cost: ₹{total_entry_cost:,.2f})")
 
@@ -581,12 +602,33 @@ def run_monthly_agent_learning_simulation(
                         stop_loss=stop_loss,
                         target_price=target_price,
                         indicators=cand_ind,
-                        technical_report=committee_result.get("technical_report", ""),
-                        fundamental_report=committee_result.get("fundamental_report", ""),
-                        news_macro_report=committee_result.get("news_macro_report", ""),
-                        debate_summary=committee_result.get("research_proposal", ""),
-                        risk_summary=f"Aggressive: {committee_result.get('aggressive_risk_view', '')[:100]} | Conservative: {committee_result.get('conservative_risk_view', '')[:100]}",
-                        pm_rationale=decision.get("rationale", "")
+                        technical_report=committee_result.get("technical_report") or "N/A",
+                        fundamental_report=committee_result.get("fundamental_report") or "N/A",
+                        news_macro_report=committee_result.get("news_macro_report") or "N/A",
+                        debate_summary=committee_result.get("research_proposal") or "N/A",
+                        risk_summary=f"Aggressive: {str(committee_result.get('aggressive_risk_view') or '')[:100]} | Conservative: {str(committee_result.get('conservative_risk_view') or '')[:100]}",
+                        pm_rationale=decision.get("rationale") or "N/A"
+                    )
+
+                    add_position(
+                        ticker=cand_sym,
+                        sector=cand_sec,
+                        qty=allocated_qty,
+                        avg_price=entry_price,
+                        stop_loss=stop_loss,
+                        target_price=target_price,
+                        opened_at=monday_str,
+                        max_hold_until=(current_monday + pd.Timedelta(days=30)).strftime("%Y-%m-%d"),
+                        snapshot_id=snap_id
+                    )
+                    log_trade(
+                        ticker=cand_sym,
+                        action="BUY",
+                        qty=allocated_qty,
+                        execution_price=entry_price,
+                        stt_and_charges=buy_fees,
+                        realized_pnl=0.0,
+                        rationale=decision.get("rationale", "")
                     )
 
                     positions[cand_sym] = {
@@ -604,7 +646,22 @@ def run_monthly_agent_learning_simulation(
                     }
                     new_trades_this_month.append(cand_sym)
                 else:
-                    console.print(f"[yellow]Committee decided to {action} for {cand_sym}. Checking next candidate on docket...[/yellow]")
+                    save_thesis_snapshot(
+                        ticker=cand_sym,
+                        sector=cand_sec,
+                        entry_price=entry_price,
+                        stop_loss=stop_loss,
+                        target_price=target_price,
+                        indicators=cand_ind,
+                        technical_report=committee_result.get("technical_report") or "N/A (Deterministic Hard Veto)",
+                        fundamental_report=committee_result.get("fundamental_report") or "N/A (Deterministic Hard Veto)",
+                        news_macro_report=committee_result.get("news_macro_report") or "N/A (Deterministic Hard Veto)",
+                        debate_summary=committee_result.get("research_proposal") or "N/A (Deterministic Hard Veto)",
+                        risk_summary=f"Committee Vetoed ({action})" if not committee_result.get("hard_veto_triggered") else "Deterministic Hard Veto",
+                        pm_rationale=decision.get("rationale") or "Deterministic Hard Veto",
+                        status="VETOED"
+                    )
+                    console.print(f"[yellow]Committee decided to {action} for {cand_sym}. Candidate recorded for False Negative / Inaction Bias audit.[/yellow]")
 
         # -------------------------------------------------------------
         # Step F: Forward Surveillance Between Monthly Review Dates
@@ -637,22 +694,39 @@ def run_monthly_agent_learning_simulation(
                         net_proceeds = gross_sale - sell_fees
 
                         # Indian Capital Gains Tax calculation (STCG vs LTCG)
+                        cur_fy = get_financial_year(bar_dt)
                         tax_info = compute_capital_gains_tax(
                             buy_date=pos["entry_date"],
                             sell_date=bar_dt,
                             cost_basis=pos["total_cost"],
                             net_proceeds=net_proceeds,
-                            fy_ltcg_exempt_used=cum_fy_exempt_used
+                            fy_ltcg_exempt_used=cum_fy_exempt_used,
+                            fy_stcl_carryforward=cum_stcl_carryforward,
+                            current_fy=current_fy_tracker
                         )
+                        current_fy_tracker = cur_fy
                         tax_deducted = tax_info["tax_deducted"]
                         net_pnl_after_tax = tax_info["net_pnl_after_tax"]
                         cum_fy_exempt_used = tax_info["new_fy_exempt_used"]
+                        cum_stcl_carryforward = tax_info.get("new_fy_stcl", 0.0)
                         if tax_info["term_type"] == "LTCG":
                             cum_ltcg_paid += tax_deducted
                         else:
                             cum_stcg_paid += tax_deducted
 
                         cash += (net_proceeds - tax_deducted)
+                        update_cash(cash)
+                        remove_position(sym)
+                        log_trade(
+                            ticker=sym,
+                            action="SELL",
+                            qty=pos["qty"],
+                            execution_price=exit_price,
+                            stt_and_charges=sell_fees,
+                            realized_pnl=net_pnl_after_tax,
+                            exit_reason="STOP_LOSS_HIT",
+                            rationale=f"Stop-loss triggered at ₹{exit_price:,.2f} on {cur_d_str}"
+                        )
                         log_tax_deduction(tax_info, ticker=sym, timestamp=cur_d_str)
 
                         pnl_pct = round((net_pnl_after_tax / pos["total_cost"]) * 100.0, 2)
@@ -674,7 +748,8 @@ def run_monthly_agent_learning_simulation(
                             position=pos_dict,
                             exit_price=exit_price,
                             exit_reason="STOP_LOSS_HIT",
-                            realized_pnl=net_pnl_after_tax
+                            realized_pnl=net_pnl_after_tax,
+                            closed_at=cur_d_str
                         )
 
                         if pm_result and pm_result.get("actionable_rule"):
@@ -699,22 +774,39 @@ def run_monthly_agent_learning_simulation(
                         net_proceeds = gross_sale - sell_fees
 
                         # Indian Capital Gains Tax calculation (STCG vs LTCG)
+                        cur_fy = get_financial_year(bar_dt)
                         tax_info = compute_capital_gains_tax(
                             buy_date=pos["entry_date"],
                             sell_date=bar_dt,
                             cost_basis=pos["total_cost"],
                             net_proceeds=net_proceeds,
-                            fy_ltcg_exempt_used=cum_fy_exempt_used
+                            fy_ltcg_exempt_used=cum_fy_exempt_used,
+                            fy_stcl_carryforward=cum_stcl_carryforward,
+                            current_fy=current_fy_tracker
                         )
+                        current_fy_tracker = cur_fy
                         tax_deducted = tax_info["tax_deducted"]
                         net_pnl_after_tax = tax_info["net_pnl_after_tax"]
                         cum_fy_exempt_used = tax_info["new_fy_exempt_used"]
+                        cum_stcl_carryforward = tax_info.get("new_fy_stcl", 0.0)
                         if tax_info["term_type"] == "LTCG":
                             cum_ltcg_paid += tax_deducted
                         else:
                             cum_stcg_paid += tax_deducted
 
                         cash += (net_proceeds - tax_deducted)
+                        update_cash(cash)
+                        remove_position(sym)
+                        log_trade(
+                            ticker=sym,
+                            action="SELL",
+                            qty=pos["qty"],
+                            execution_price=exit_price,
+                            stt_and_charges=sell_fees,
+                            realized_pnl=net_pnl_after_tax,
+                            exit_reason="TARGET_HIT",
+                            rationale=f"Profit target hit at ₹{exit_price:,.2f} on {cur_d_str}"
+                        )
                         log_tax_deduction(tax_info, ticker=sym, timestamp=cur_d_str)
 
                         pnl_pct = round((net_pnl_after_tax / pos["total_cost"]) * 100.0, 2)
@@ -722,7 +814,20 @@ def run_monthly_agent_learning_simulation(
                             f"\n[bold green]▲ PROFIT TARGET HIT:[/] {sym} target ₹{exit_price:,.2f} reached on {cur_d_str}! "
                             f"(Held: {tax_info['holding_days']}d | Tax: ₹{tax_deducted:,.2f} {tax_info['term_type']} | Net PnL: [bold green]{pnl_pct:+.2f}%[/bold green])"
                         )
-                        close_thesis_snapshot(pos["snapshot_id"])
+                        pos_dict = {
+                            "ticker": sym,
+                            "snapshot_id": pos["snapshot_id"],
+                            "avg_price": pos["entry_price"],
+                            "opened_at": pos["entry_date_str"],
+                            "sector": pos["sector"]
+                        }
+                        run_post_mortem_audit(
+                            position=pos_dict,
+                            exit_price=exit_price,
+                            exit_reason="TARGET_HIT",
+                            realized_pnl=net_pnl_after_tax,
+                            closed_at=cur_d_str
+                        )
                         del positions[sym]
                         break
 
@@ -752,6 +857,20 @@ def run_monthly_agent_learning_simulation(
                 f"[cyan]🏦 Treasury Liquid Sweep:[/] Parked ₹{liquid_fund_swept:,.2f} in 6.75% Liquid Mutual Fund. "
                 f"Accrued [bold green]+₹{interest_earned:,.2f}[/bold green] risk-free yield over {days_in_period} days."
             )
+
+        # -------------------------------------------------------------
+        # Step H: Inaction Bias Audit & Memory Pruning (False Negatives)
+        # -------------------------------------------------------------
+        try:
+            from reflection_engine import audit_vetoed_opportunities
+            from database import prune_stale_or_invalid_rules
+            relaxations = audit_vetoed_opportunities(historical_data=data_by_ticker)
+            if relaxations:
+                for rx in relaxations:
+                    console.print(f"[bold green]🌱 Inaction Bias Audit: Formulated Relaxation Rule for {rx['ticker']} (+{rx['max_gain_pct']}% missed rally)[/bold green]")
+            prune_stale_or_invalid_rules(max_age_days=180, max_false_vetoes=3)
+        except Exception as e:
+            logger.debug(f"Inaction bias audit skipped: {e}")
 
         # Calculate month-end Mark-to-Market NAV
         invested_now = 0.0

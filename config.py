@@ -111,6 +111,13 @@ MIN_RISK_REWARD_RATIO = 2.5          # (Target - Entry) / (Entry - Stop) >= 2.5
 DEFAULT_HOLDING_DAYS = 30            # Time-stop review window
 
 # ---------------------------------------------------------
+# Liquid Mutual Fund & Risk-Free Treasury Parameters
+# ---------------------------------------------------------
+LIQUID_FUND_ANNUAL_YIELD = 0.0675     # 6.75% annualized risk-free liquid fund return
+LIQUID_SWEEP_CASH_RATIO = 0.30        # Sweep idle cash when cash exceeds 30% NAV
+LIQUID_OPERATIONAL_BUFFER_PCT = 0.10  # Maintain 10% NAV operational cash buffer
+
+# ---------------------------------------------------------
 # Realistic Indian Delivery Trade Cost Model
 # ---------------------------------------------------------
 STT_PCT = 0.001                      # 0.10% Securities Transaction Tax on Buy & Sell (Delivery)
@@ -136,23 +143,28 @@ def _parse_tier_list(env_var: str, default: List[str]) -> List[str]:
     return default
 
 DEFAULT_QUICK_TIERS = [
-    "gemini-3.5-flash-lite",   # 15 RPM, 1,500 RPD (Primary fast workhorse)
-    "gemini-3.1-flash-lite",   # 15 RPM, 1,500 RPD (Secondary fast workhorse)
-    "gemini-2.5-flash",        # 15 RPM, 1,500 RPD
-    "gemini-2.0-flash",        # 15 RPM, 1,500 RPD
-    "gemini-3-flash-preview",  # Fallback
-    "gemini-3.6-flash",        # Low daily quota (20 RPD) at end of ladder
-    "gemini-3.8-flash"
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
 ]
 DEFAULT_DEEP_TIERS = [
-    "gemini-3.5-flash-lite",
     "gemini-3.1-flash-lite",
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
-    "gemini-3-flash-preview",
-    "gemini-3.6-flash",
-    "gemini-3.8-flash"
+    "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
 ]
+
+# Honor QUICK_THINK_MODEL and DEEP_THINK_MODEL from .env if provided
+_env_quick = os.getenv("QUICK_THINK_MODEL")
+if _env_quick:
+    if _env_quick in DEFAULT_QUICK_TIERS:
+        DEFAULT_QUICK_TIERS.remove(_env_quick)
+    DEFAULT_QUICK_TIERS.insert(0, _env_quick)
+
+_env_deep = os.getenv("DEEP_THINK_MODEL")
+if _env_deep:
+    if _env_deep in DEFAULT_DEEP_TIERS:
+        DEFAULT_DEEP_TIERS.remove(_env_deep)
+    DEFAULT_DEEP_TIERS.insert(0, _env_deep)
 
 QUICK_THINK_TIERS = _parse_tier_list("QUICK_THINK_TIERS", DEFAULT_QUICK_TIERS)
 DEEP_THINK_TIERS = _parse_tier_list("DEEP_THINK_TIERS", DEFAULT_DEEP_TIERS)
@@ -279,13 +291,14 @@ def is_daily_quota_error(err: Exception) -> bool:
 
 
 def is_cascadable_error(err: Exception) -> bool:
-    """Detects any server timeout, capacity spike, or quota error that warrants tier cascading."""
+    """Detects any server timeout, capacity spike, 404 deprecation, or quota error that warrants tier cascading."""
     msg = str(err).lower()
     indicators = [
         "504", "deadline", "timeout", "timed out",
         "503", "unavailable", "high demand", "capacity",
         "502", "bad gateway", "connection",
-        "429", "resource_exhausted", "quota"
+        "429", "resource_exhausted", "quota",
+        "404", "not_found", "not found", "no longer supported"
     ]
     return any(ind in msg for ind in indicators)
 
@@ -294,29 +307,40 @@ def paced_llm_invoke(
     llm: Any,
     prompt_or_messages: Any,
     is_deep_think: bool = False,
-    schema: Optional[Any] = None
+    schema: Optional[Any] = None,
+    temperature: Optional[float] = None
 ) -> Any:
     """Thread-safe paced invocation with key pooling and instant failover across model tiers.
 
-    Exhausts each model across all available API keys before cascading to the next model tier.
+    Preserves node-level temperature across tier failovers and exhausts each model
+    across all available API keys before cascading to the next model tier.
     """
     ladder = DEEP_THINK_TIERS if is_deep_think else QUICK_THINK_TIERS
     num_keys = len(GOOGLE_API_KEYS) or 1
+    target_temp = temperature if temperature is not None else getattr(llm, "temperature", 0.1)
 
     for attempt in range(5):
         for current_model in ladder:
             if current_model in _daily_exhausted_models:
                 continue
 
+            model_quota_exhausted = False
+            model_deprecated = False
+
             for key_idx in range(num_keys):
                 enforce_llm_pacing()
                 try:
-                    active_llm = get_deep_think_llm(model_override=current_model) if is_deep_think else get_quick_think_llm(model_override=current_model)
+                    active_llm = (
+                        get_deep_think_llm(temperature=target_temp, model_override=current_model)
+                        if is_deep_think
+                        else get_quick_think_llm(temperature=target_temp, model_override=current_model)
+                    )
                     if schema is not None:
                         active_llm = active_llm.with_structured_output(schema)
 
                     return active_llm.invoke(prompt_or_messages)
                 except Exception as e:
+                    err_msg = str(e).lower()
                     if is_auth_error(e):
                         logger.warning(f"[API Key Pool] Current API key returned auth error ({e}). Rotating to next key...")
                         rotate_to_next_google_api_key()
@@ -328,8 +352,11 @@ def paced_llm_invoke(
                         )
                         if num_keys > 1:
                             rotate_to_next_google_api_key()
+                            if key_idx == num_keys - 1:
+                                model_quota_exhausted = True
                             continue
                         else:
+                            model_quota_exhausted = True
                             break
                     elif is_per_minute_rate_limit(e):
                         logger.warning(f"[Model Tiering] Model '{current_model}' hit transient RPM limit. Pausing 6.0s...")
@@ -339,23 +366,34 @@ def paced_llm_invoke(
                         logger.warning(f"[Network Guard] Connection dropout detected ({e}). Pausing 10.0s...")
                         time.sleep(10.0)
                         continue
+                    elif "404" in err_msg or "not_found" in err_msg or "no longer available" in err_msg:
+                        logger.warning(f"[Model Tiering] Model '{current_model}' deprecated or not found (404). Cascading...")
+                        model_deprecated = True
+                        break
                     elif is_cascadable_error(e):
-                        logger.warning(f"[Model Tiering] Model '{current_model}' encountered server timeout / spike ({e}). Cascading...")
-                        time.sleep(1.0)
-                        break
+                        logger.warning(f"[Model Tiering] Model '{current_model}' encountered transient spike/timeout ({e}). Trying next key...")
+                        rotate_to_next_google_api_key()
+                        time.sleep(2.0)
+                        continue
                     else:
-                        logger.warning(f"[Model Tiering] Model '{current_model}' encountered unexpected error ({e}). Cascading...")
+                        logger.warning(f"[Model Tiering] Model '{current_model}' encountered unexpected error ({e}). Trying next key...")
+                        rotate_to_next_google_api_key()
                         time.sleep(1.0)
-                        break
+                        continue
 
-            # If all keys exhausted for this model, record it
-            with _tier_lock:
-                _daily_exhausted_models.add(current_model)
-                logger.warning(f"[Model Tiering] Model '{current_model}' exhausted across all {num_keys} keys. Cascading to next model tier...")
+            # Only permanently blacklist if true daily quota or 404 deprecation
+            if model_quota_exhausted:
+                with _tier_lock:
+                    _daily_exhausted_models.add(current_model)
+                    logger.warning(f"[Model Tiering] Model '{current_model}' daily quota exhausted across all {num_keys} keys.")
+            elif model_deprecated:
+                with _tier_lock:
+                    _daily_exhausted_models.add(current_model)
+                    logger.warning(f"[Model Tiering] Model '{current_model}' deprecated. Excluded from future passes.")
 
         if attempt < 4:
             sleep_time = (attempt + 1) * 8.0
-            logger.info(f"[Model Tiering] Pass {attempt+1} encountered transient timeouts. Pausing {sleep_time:.0f}s before retry...")
+            logger.info(f"[Model Tiering] Pass {attempt+1} encountered transient timeouts across tiers. Pausing {sleep_time:.0f}s before retry...")
             time.sleep(sleep_time)
 
     # If all tiers and keys exhausted

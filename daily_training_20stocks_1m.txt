@@ -1,0 +1,135 @@
+[Logging] Saving all terminal output to: daily_training_20stocks_1m.txt
+
+===============================================================================
+=
+  DAY-TO-DAY WALK-FORWARD TRAINING & SIMULATION (20 STOCKS)
+===============================================================================
+=
+Universe: TRENT.NS, BEL.NS, ADANIPORTS.NS, RELIANCE.NS, INFY.NS, ICICIBANK.NS, 
+HDFCBANK.NS, SUNPHARMA.NS, BAJFINANCE.NS, LT.NS... (20 Liquid Equities)
+Downloading point-in-time daily bars for universe + Nifty 50 + India VIX...
+Simulation window: 2026-10-14 to 2026-11-13 (21 trading sessions)
+Enforcing strict point-in-time isolation: date > T is completely hidden from 
+agents.
+Mode: 10-Agent Committee Evaluation | Sizing Cap: Max 3 concurrent holdings 
+(6-12% NAV each)
+
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-10-14] ⚡ BOUGHT: ADANIPORTS.NS 28 shs @ ₹1,748.70 (Size: 5.0%, Stop: 
+₹1,608.66, Target: ₹2,098.80)
+  [2026-10-14] NAV: ₹999,917.50 | Liquid Fund: ₹900,000.00 (+₹0 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,622.70 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-15] NAV: ₹999,929.94 | Liquid Fund: ₹900,166.44 (+₹166 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,997.35 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-16] NAV: ₹1,000,309.21 | Liquid Fund: ₹900,332.91 (+₹333 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,146.15 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-19] NAV: ₹1,000,901.31 | Liquid Fund: ₹900,499.41 (+₹499 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,888.95 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-21] NAV: ₹1,000,586.24 | Liquid Fund: ₹900,665.94 (+₹666 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,811.35 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-22] NAV: ₹1,000,786.40 | Liquid Fund: ₹900,832.50 (+₹832 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,687.65 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-23] NAV: ₹999,628.59 | Liquid Fund: ₹900,999.09 (+₹999 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,600.00 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-26] NAV: ₹1,001,189.61 | Liquid Fund: ₹901,165.71 (+₹1,166 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,753.20 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-27] NAV: ₹1,001,412.26 | Liquid Fund: ₹901,332.36 (+₹1,332 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,749.75 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-28] NAV: ₹1,001,769.34 | Liquid Fund: ₹901,499.04 (+₹1,499 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,698.85 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-29] NAV: ₹1,005,035.66 | Liquid Fund: ₹901,665.76 (+₹1,666 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹22,936.75 (ACTIVE_LIQUIDATION_BEAR)
+  [2026-10-30] NAV: ₹1,004,586.41 | Liquid Fund: ₹901,832.51 (+₹1,833 yield) | 
+Holdings: 1/3 (ADANIPORTS.NS) | Nifty: ₹23,053.10 (ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing KOTAKBANK.NS...
+  -> [2/8] Fundamental Analyst auditing KOTAKBANK.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating KOTAKBANK.NS...
+  -> [4/8] Bull Researcher building upside thesis for KOTAKBANK.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for KOTAKBANK.NS...
+  -> [6/8] Research Manager synthesizing debate for KOTAKBANK.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing KOTAKBANK.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for KOTAKBANK.NS...
+[2026-11-02] ⚡ BOUGHT: KOTAKBANK.NS 131 shs @ ₹458.35 (Size: 6.0%, Stop: 
+₹428.80, Target: ₹532.23)
+  -> [1/8] Technical Analyst auditing TCS.NS...
+  -> [2/8] Fundamental Analyst auditing TCS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating TCS.NS...
+  -> [4/8] Bull Researcher building upside thesis for TCS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for TCS.NS...
+  -> [6/8] Research Manager synthesizing debate for TCS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing TCS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for TCS.NS...
+[2026-11-02] ⚡ BOUGHT: TCS.NS 40 shs @ ₹2,501.70 (Size: 10.0%, Stop: 
+₹2,289.24, Target: ₹3,032.85)
+  [2026-11-02] NAV: ₹1,004,595.41 | Liquid Fund: ₹792,571.56 (+₹1,999 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,440.80 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-03] NAV: ₹1,005,824.49 | Liquid Fund: ₹792,718.13 (+₹2,146 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,810.85 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-04] NAV: ₹1,003,966.13 | Liquid Fund: ₹792,864.73 (+₹2,292 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹23,960.60 
+(EARLY_RECOVERY_PIVOT)
+  [2026-11-05] NAV: ₹1,006,785.16 | Liquid Fund: ₹793,011.36 (+₹2,439 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹24,536.60 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-06] NAV: ₹1,010,202.81 | Liquid Fund: ₹793,158.01 (+₹2,586 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹25,030.35 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-09] NAV: ₹1,009,530.79 | Liquid Fund: ₹793,304.69 (+₹2,732 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹25,044.65 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-11] NAV: ₹1,009,620.11 | Liquid Fund: ₹793,451.40 (+₹2,879 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹25,255.05 
+(ACTIVE_LIQUIDATION_BEAR)
+  [2026-11-12] NAV: ₹1,009,576.53 | Liquid Fund: ₹793,598.13 (+₹3,026 yield) | 
+Holdings: 3/3 (ADANIPORTS.NS, KOTAKBANK.NS, TCS.NS) | Nifty: ₹25,299.35 
+(ACTIVE_LIQUIDATION_BEAR)
+  -> [1/8] Technical Analyst auditing ADANIPORTS.NS...
+  -> [2/8] Fundamental Analyst auditing ADANIPORTS.NS...
+  -> [3/8] Macro & News Catalyst Analyst evaluating ADANIPORTS.NS...
+  -> [4/8] Bull Researcher building upside thesis for ADANIPORTS.NS...
+  -> [5/8] Bear Researcher red-teaming vulnerabilities for ADANIPORTS.NS...
+  -> [6/8] Research Manager synthesizing debate for ADANIPORTS.NS...
+  -> [7/8] Risk Committee (Aggressive, Neutral, Conservative) auditing ADANIPORTS.NS...
+  -> [8/8] Lead Portfolio Manager synthesizing & issuing final order for ADANIPORTS.NS...
+[2026-11-13] ⚡ BOUGHT: ADANIPORTS.NS 31 shs @ ₹1,903.30 (Size: 6.0%, Stop: 
+₹1,750.87, Target: ₹2,284.38)
+  [2026-11-13] NAV: ₹1,006,323.22 | Liquid Fund: ₹787,020.87 (+₹3,173 yield) | 
+Holdings: 3/3 (KOTAKBANK.NS, TCS.NS, ADANIPORTS.NS) | Nifty: ₹25,144.30 
+(ACTIVE_LIQUIDATION_BEAR)
+
+===============================================================================
+=
+  DAY-TO-DAY WALK-FORWARD SIMULATION EXECUTIVE SCORECARD
+===============================================================================
+=
+┌─────────────────────────────────┬───────────────────┬───────────────────────┐
+│ Metric                          │   Strategy Result │  Benchmark / Baseline │
+├─────────────────────────────────┼───────────────────┼───────────────────────┤
+│ Final Portfolio NAV             │     ₹1,006,323.22 │         ₹1,000,000.00 │
+│ Strategy Total Return           │            +0.63% │    +11.15% (Nifty 50) │
+│ Alpha vs Nifty 50               │           -10.52% │                 0.00% │
+│ Liquid Fund Yield Earned        │        +₹3,172.62 │      0.00 (Cash Drag) │
+│ Maximum Drawdown                │            -0.38% │                     — │
+│ Total Trades Closed             │                 1 │                     — │
+│ Win Rate %                      │  100.0% (1W / 0L) │                 50.0% │
+│ Rules Learned From Mistakes     │                 0 │       0 (Naive Prior) │
+│ Subsequent Bad Trades Vetoed    │                 0 │                     0 │
+└─────────────────────────────────┴───────────────────┴───────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✓ Closed-Loop Verification: The system synthesized 0 guardrail rules from   │
+│ mistakes, which subsequently prevented 0 risky trades from suffering        │
+│ similar losses.                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✓ Institutional Memory Synchronized: All day-to-day simulated learnings and 
+post-mortems have been permanently saved into the live SQLite database 
+(`paper_portfolio_india.db`).

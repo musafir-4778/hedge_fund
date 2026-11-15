@@ -64,10 +64,20 @@ Analyze {ticker} using these deterministic indicators (zero speculation):
 - Circuit Limit Warning: {tech.get('circuit_limit_warning')}
 - Minervini Stage-2 Uptrend Criteria: {tech.get('stage2_uptrend')}
 
-Write a 3-bullet technical audit:
-1. Trend alignment & Minervini Stage 2 status relative to broader benchmark.
-2. Volume breakout confirmation, relative strength alpha, and momentum health (RSI).
-3. Risk boundary & circuit limit assessment. Keep concise and factual."""
+REGIME-ADAPTIVE TECHNICAL EVALUATION RULES:
+1. Trend & Moving Average Structure:
+   - In BULL_STAGE2: Look for classic Minervini Stage-2 alignment (Close > SMA_50 > SMA_150 > SMA_200).
+   - In BEAR_RISK_OFF or Early Recovery (Nifty < 200-SMA or 50-SMA): Moving averages are lagging indicators. Do NOT disqualify a stock solely because SMA_50 < SMA_200 if the stock is trading above its own rising SMA_20 and SMA_50 with positive 63-day RS Alpha (> +0.02). Classify this as an "Early Stage-1/2 Turnaround Leader".
+2. Dynamic Volume Confirmation:
+   - Standard Breakout Hurdle: Volume Ratio >= 1.15x.
+   - Quiet Institutional Accumulation Exception: During market pullbacks, consolidations, or early relief rallies, institutional buying is absorbed quietly. Accept Volume Ratio >= 0.80x as constructive if 63-day RS Alpha > 0.0 and Wilder RSI is in the 45–68 accumulation zone.
+3. Overextension Leeway:
+   - Allow price extension up to 25-30% above SMA_50 for structural momentum leaders before flagging exhaustion.
+
+Write a concise 3-bullet technical audit:
+1. Regime-adjusted trend structure & Minervini Stage 2 status relative to broader benchmark.
+2. Volume breakout confirmation, relative strength alpha, and momentum health (Wilder RSI).
+3. ATR volatility, risk boundary & circuit limit assessment. Keep concise and factual."""
 
     llm = get_quick_think_llm(temperature=0.1)
     response = paced_llm_invoke(llm, prompt)
@@ -130,9 +140,9 @@ Mandatory Lessons Learned from Firm's Past Mistakes (Strict Guardrails):
 
 Audit Requirements:
 {accounting_rule}
-2. Adhere strictly to past mistake rules above (e.g. debt criteria, governance).
-3. Valuation reasonableness (PE vs Forward PE) and earnings trajectory.
-4. Solvency & promoter skin-in-the-game. Keep concise and factual."""
+2. Contextual Rule Application: Treat firm past-mistake rules as risk flags (conviction adjustments), NOT automatic hard vetoes, unless non-financial earnings growth is collapsing (< -20%) alongside negative operating cash flow.
+3. Forward Earnings Trajectory: If Forward PE is lower than Trailing PE (indicating expected earnings expansion) and ROE >= 14%, highlight positive operating leverage.
+4. Solvency & Promoter Skin-in-the-Game: Flag red flags only if Debt/Equity > 150% (non-financial) or promoter holding is < 25%. Keep concise and factual."""
 
     llm = get_quick_think_llm(temperature=0.1)
     response = paced_llm_invoke(llm, prompt)
@@ -173,9 +183,13 @@ Analyze news flow and macroeconomic/benchmark context for {ticker}:
 \"\"\"
 
 Audit Requirements:
-1. Benchmark Regime Deduction: Independently deduce the prevailing Indian market regime from the benchmark data (e.g. Bullish Stage-2 Advance, Rangebound Consolidation, or Risk-Off Downtrend) by comparing Nifty 50 price action against its 50 and 200 SMAs and India VIX. State your deduced regime clearly.
-2. Check for quarterly results blackout (flag DANGER if results within < 5 trading days).
-3. Assess RBI monetary policy, government capex/PLI tailwinds, sector policies, and macro risk posture. Keep concise."""
+1. Nuanced Regime Classification: Classify the macro environment into one of FOUR operational states based on Nifty 50 SMAs, 63d trend, and India VIX:
+   - CONFIRMED_BULL_STAGE2 (Nifty > 50-SMA > 200-SMA, VIX < 18): Full risk-on deployment.
+   - EARLY_RECOVERY_PIVOT (Nifty below 200-SMA or 50-SMA, but stabilizing or stock exhibits strong positive RS Alpha decoupling): Selective accumulation allowed at 50-60% position size.
+   - CHOPPY_ROTATION (Rangebound index): Focus strictly on sector-specific relative strength leaders.
+   - ACTIVE_LIQUIDATION_BEAR (Sharp index breakdown with VIX > 22): Defensive posture + 6.75% Liquid Fund parking.
+2. Earnings Blackout Check: Flag caution only if quarterly results are confirmed within < 5 trading days.
+3. Domestic Tailwinds: Highlight PLI, defense/rail/infra capex, or defensive pharma export tailwinds. Keep concise and factual."""
 
     llm = get_quick_think_llm(temperature=0.1)
     response = paced_llm_invoke(llm, prompt)
@@ -208,8 +222,10 @@ Build the highest-conviction bullish case for {ticker} based strictly on these a
 - News/Macro Report: {news_rep}
 - Previous Bear Rebuttals (if any): {past_bears}
 
-DIALECTICAL ANTI-WALL MANDATE:
-Actively cross-examine any historical rules or Bear arguments that act as arbitrary 'walls' or cause analysis paralysis. If the stock exhibits confirmed Stage-2 trend alignment, healthy cash generation, and positive RS Alpha, argue vigorously against capping runners or enforcing premature liquidation.
+ANTI-PARALYSIS MANDATE:
+- Challenge any Bear argument that relies on lagging moving-average filters or rigid volume gates during market recoveries.
+- Emphasize the Opportunity Cost of sitting in 6.75% liquid funds when a stock demonstrates positive 63-day RS Alpha and asymmetric >= 2.5:1 reward-to-risk.
+- If the stock exhibits confirmed Stage-2 trend alignment, healthy cash generation, and positive RS Alpha, argue vigorously against capping runners or enforcing premature liquidation.
 
 Deliver a compelling 3-point thesis detailing catalyst drivers, growth acceleration, and upside runway."""
 
@@ -244,7 +260,10 @@ Attack and stress-test the bullish thesis for {ticker}.
 {lessons}
 \"\"\"
 
-Identify the 3 most fatal blind spots: valuation trap, earnings cyclicality, governance risks, or false breakout risks."""
+PROPORTIONAL RED-TEAM MANDATE:
+- Only cite past post-mortem rules from `episodic_lessons` that match the CURRENT market regime and sector.
+- Acknowledge when a risk can be mitigated via reduced position sizing (e.g., 5-6% NAV instead of 12% NAV) rather than demanding a 0% HOLD veto.
+- Identify the 3 most fatal blind spots: valuation trap, earnings cyclicality, governance risks, or false breakout risks."""
 
     llm = get_quick_think_llm(temperature=0.1)
     response = paced_llm_invoke(llm, prompt)
@@ -280,15 +299,29 @@ Synthesize the dialectical debate for {ticker}:
 - Bull Case: {bulls}
 - Bear Case: {bears}
 
+CONVICTION SCORING & GUARDRAIL RESOLUTION RUBRIC:
+Start with a base score of 50 and adjust:
+- +20 pts if 63-day RS Alpha vs Nifty 50 > +0.02 (decoupled leadership).
+- +15 pts if Stage-2 aligned OR reclaiming 50-SMA during an index pullback.
+- +15 pts if ROE >= 15% (or >= 14% for Financials) with positive OCF/earnings trajectory.
+- -15 pts (Soft Penalty, NOT a hard veto) if 20d Volume Ratio is between 0.80x and 1.15x.
+- -20 pts if benchmark is below 200-SMA (mitigated by sizing at 5-6% NAV rather than vetoing).
+
+If Final Conviction Score >= 60: Recommend PROCEED (BUY with appropriate regime sizing).
+If Final Conviction Score < 60: Recommend VETO (HOLD).
+
 REGIME-ADAPTIVE SYNTHESIS INSTRUCTIONS:
+- Soft Conviction Penalties over Binary Bans: Do NOT issue binary hard vetoes solely based on past trade scars. If a historical post-mortem rule is triggered, treat it as a conviction deduction rather than an absolute roadblock. Allow a HIGH-conviction override if 63-day RS Alpha exceeds +0.05 and the setup demonstrates strong earnings quality.
+- Opportunity Cost vs Inaction Bias: Actively weigh opportunity cost against capital preservation. A static post-mortem rule must NOT override an asymmetric setup satisfying >= 2.5:1 Risk-to-Reward and strong relative strength alpha (> 0.03).
 - Resolve Rule Conflict: If the benchmark is below its 50/200 SMA, Rule #137 (50% position sizing, max 6% NAV) takes precedence over Rule #136 (blanket veto) for stocks with positive 63d RS Alpha.
-- Early Rebound Volume: In market consolidations or relief rebounds, accept 20-day volume ratio >= 0.85x for high relative strength leaders rather than strictly requiring 1.2x.
-- Do not let defensive guardrails cause paralysis on genuine decoupled market leaders.
+- Early Rebound Volume: In market consolidations or relief rebounds (Nifty RSI < 42 or below moving averages), accept 20-day volume ratio >= 0.80x-0.85x for high relative strength leaders rather than strictly requiring 1.2x.
+- Dynamic Overextension: Allow 25–35% extension above 50-SMA for structural compounders with institutional accumulation.
 
 Deliver an executive synthesis:
-1. Verdict: Does the bullish edge outweigh the red-team risks and comply with past mistake guardrails?
-2. Decisive Catalyst or Vulnerability.
-3. Recommended Stance for the Risk Committee (Proceed / Veto)."""
+1. Final Conviction Score (0–100) with detailed rubric points breakdown.
+2. Verdict: Does the bullish edge outweigh the red-team risks and comply with past mistake guardrails?
+3. Decisive Catalyst or Vulnerability.
+4. Recommended Stance for the Risk Committee (Proceed / Veto)."""
 
     llm = get_deep_think_llm(temperature=0.1)
     response = paced_llm_invoke(llm, prompt, is_deep_think=True)
@@ -352,14 +385,18 @@ You must conduct a three-angle risk audit on the trade proposal for {ticker}:
    - Treasury & Sweep Status: {state.get('treasury_context', 'Standard liquidity')}
    - Verify sector concentration compliance, liquidity preservation, and risk-free parking yield.
 
-3. Conservative CRO View (Capital Protector & Stop-Loss Auditor):
+3. Conservative CRO View (Capital Protector & Sizing Auditor):
    - Benchmark Indicators: {bm_str}
    - ANCHORED CURRENT MARKET PRICE (CMP): ₹{latest_close}
    - ANCHORED HARD STOP-LOSS: ₹{hard_stop} (Pre-calculated beta-adaptive 2.5-3.0x ATR_14, exact risk per share = ₹{risk_per_share})
    - MINIMUM VALID TARGET: ₹{min_target} (Satisfies >= 2.5:1 Risk-to-Reward)
    - Circuit Warning: {tech.get('circuit_limit_warning')}
    - CRITICAL CRO INSTRUCTION: DO NOT recalculate or hallucinate new price numbers. You MUST use hard_stop_price = {hard_stop} and target_price >= {min_target}.
-   - Benchmark Downtrend / Risk-Off Guardrail: If benchmark metrics indicate market correction/downtrend (Nifty below 50 or 200 SMA), enforce Rule #137 by approving at 50% standard position sizing (max 6% NAV) for decoupled leaders with positive RS Alpha and volume >= 0.85x, while maintaining >= 50% cash/liquid fund preservation. Reject low-conviction or negative-alpha cyclical trades.
+   - ANTI-SCLEROSIS MANDATE: Your job is to price and size risk, NOT to paralyze the firm into 0% equity exposure during recoveries.
+   - If the stock has positive 63-day RS Alpha (> 0.0) and satisfies the 2.5:1 Risk-to-Reward ratio at ₹{hard_stop}, you MUST set risk_approved = True and recommended_action = "BUY".
+   - If the benchmark is below its 50-SMA or 200-SMA, manage risk by specifying a 50% reduced allocation (5%–6% NAV) in your conservative_view rather than vetoing the trade.
+   - Preventing Inaction Bias & Weighing Opportunity Cost: Actively weigh opportunity cost against capital preservation. A static post-mortem rule must NOT override an asymmetric setup satisfying a strong >= 2.5:1 risk-to-reward ratio and a decisive relative strength advantage (63-day RS Alpha > 0.03).
+   - Dynamic Overextension: Allow overextension ceilings above the 50-day SMA to expand from 20% up to 30–35% for proven multi-quarter compounders when market breadth indicators show expanding participation.
 
 Research Proposal Under Review:
 \"\"\"
@@ -502,6 +539,11 @@ Evaluate:
 def portfolio_manager_node(state: InvestmentFirmState) -> Dict[str, Any]:
     """Synthesizes all inputs and outputs strict structured TradeDecision using deep_think_llm."""
     ticker = state["ticker"]
+    
+    # Zero-Token Short-Circuit Check
+    if state.get("hard_veto_triggered") and state.get("trade_decision"):
+        return {"trade_decision": state["trade_decision"]}
+
     tech = state["technicals"]
     regime = state["market_regime"]
     scorecard = state.get("agent_scorecard", "")
@@ -521,16 +563,10 @@ def portfolio_manager_node(state: InvestmentFirmState) -> Dict[str, Any]:
                        for fin in ["bank", "financial", "nbfc", "lending", "insurance"])
     earnings_growth = float(fund.get("earnings_growth", 0.0) or 0.0)
 
-    # ------------------------------------------------------------------
-    # DETERMINISTIC HARD VETO GATES (Zero LLM Tokens Burned on Disqualified Stocks)
-    # ------------------------------------------------------------------
-    # Hard Veto 1: Severe non-financial earnings collapse (< -20%)
-    # Defensive sectors or decoupled momentum leaders with positive cash flow are evaluated by committee rather than hard-vetoed.
+    # Deterministic Hard Vetoes (backup if short-circuit did not trigger)
     is_defensive = sector.lower() in ["healthcare", "pharmaceuticals", "pharma"] or "pharma" in industry.lower() or "defense" in industry.lower()
     has_strong_rs = float(tech.get("rs_alpha_63d", 0.0) or 0.0) >= 0.03 and float(fund.get("operating_cash_flow", 0.0) or 0.0) > 0
     if not is_financial and not (is_defensive and has_strong_rs) and earnings_growth < -0.20:
-        logger.info(f"[Hard Veto] Disqualifying {ticker}: Severe non-financial earnings contraction ({earnings_growth*100:.1f}% < -20%).")
-        print(f"  -> [8/8] Lead Portfolio Manager: HARD VETO triggered for {ticker} (Earnings Contraction {earnings_growth*100:.1f}% < -20%).", flush=True)
         decision = TradeDecision(
             ticker=ticker,
             action="HOLD",
@@ -544,23 +580,14 @@ def portfolio_manager_node(state: InvestmentFirmState) -> Dict[str, Any]:
         )
         return {"trade_decision": decision.model_dump()}
 
-    # Hard Veto 2: Bear Market breakdown below 50-day SMA
-    # Evaluated deterministically using benchmark data (nifty_close < nifty_sma50) or regime state
     bm = state.get("benchmark_context") or {}
     bm_close = float(bm.get("nifty_close", 0.0) or 0.0)
     bm_sma50 = float(bm.get("nifty_sma50", 0.0) or 0.0)
     benchmark_downtrend = (bm_close > 0 and bm_sma50 > 0 and bm_close < bm_sma50) or (regime == "BEAR_RISK_OFF")
     rs_alpha = float(tech.get("rs_alpha_63d", 0.0) or 0.0)
-
-    # Regime-Adaptive Leeway:
-    # A true structural breakdown occurs if price is > 3% below 50-SMA (latest_close < sma_50 * 0.97),
-    # or if below 50-SMA with non-positive RS Alpha (<= 0.0). Minor pullbacks testing 50-SMA (within 3%)
-    # on decoupled stocks with positive RS Alpha (> 0.0) are sent to committee for risk-managed review.
     is_structural_breakdown = (sma_50 > 0 and latest_close < sma_50 * 0.97) or (sma_50 > 0 and latest_close < sma_50 and rs_alpha <= 0.0)
 
     if benchmark_downtrend and is_structural_breakdown:
-        logger.info(f"[Hard Veto] Disqualifying {ticker}: In benchmark downtrend, price (₹{latest_close}) broke below 50-day SMA (₹{sma_50}) with non-positive RS Alpha ({rs_alpha:+.2f}).")
-        print(f"  -> [8/8] Lead Portfolio Manager: HARD VETO triggered for {ticker} (Benchmark Downtrend and Close ₹{latest_close} < SMA_50 ₹{sma_50}).", flush=True)
         decision = TradeDecision(
             ticker=ticker,
             action="HOLD",
@@ -608,12 +635,16 @@ Mandatory Rules:
 {lessons}
 \"\"\"
 3. Capital Preservation Mandate & Regime-Adaptive Leeway:
+   - Opportunity Cost & Inaction Bias: Actively weigh opportunity cost against capital preservation. A static post-mortem rule must NOT override an asymmetric setup satisfying >= 2.5:1 Risk-to-Reward and strong relative strength alpha (> 0.03).
    - Rule #136 vs Rule #137 Conflict Resolution: If the benchmark index is below its 50 or 200 SMA, do NOT freeze into complete inaction. Follow Rule #137: you MAY allocate to high-conviction decoupled leaders (positive 63d RS Alpha > 0.0) or defensive setups (Healthcare/Pharma/Defense) at 50% standard position size (allocation_pct between 0.04 and 0.06, max 6% NAV), while maintaining >= 50% cash/liquid fund preservation. Rule #137 supersedes Rule #136's blanket ban when an asset shows confirmed Stage-2 structure or positive RS Alpha.
-   - Early Rebound / Relief Leeway on Volume (Rule #138): In corrective markets or early V-shaped relief rebounds (Nifty below 200 SMA or RSI < 45), initial institutional accumulation occurs on light volume before broad participation. For top RS Alpha leaders, relax the volume threshold from 1.2x to 0.85x. Do NOT veto decoupled leaders simply because volume is between 0.85x and 1.2x during market turnarounds.
-   - Overextension Leeway: For structural compounders with multi-quarter accumulation, permit up to 25–30% extension above 50-SMA if volume ratio >= 1.0x, rather than premature profit truncation.
+   - Early Rebound / Relief Leeway on Volume (Rule #138): In corrective markets or early V-shaped relief rebounds (Nifty below 200 SMA or RSI < 42), initial institutional accumulation occurs on light volume before broad participation. For top RS Alpha leaders, relax the volume threshold from 1.2x to 0.85x. Do NOT veto decoupled leaders simply because volume is between 0.85x and 1.2x during market turnarounds.
+   - Dynamic Overextension Leeway: For structural compounders with multi-quarter accumulation, permit up to 30–35% extension above 50-SMA if volume ratio >= 1.0x, rather than premature profit truncation at 20%.
 4. Hard Stops: NEVER set stop_loss_price above ₹{hard_stop} (Beta-adaptive 2.5-3.0x ATR_14).
 5. Asymmetric Target: target_price MUST satisfy at least ₹{min_target} (>= 2.5:1 Risk-to-Reward).
-6. Sizing: allocation_pct must be between 0.0 and 0.12 (max 12%). In benchmark downtrend/correction, size approved trades at 0.04 to 0.06 (Rule #137).
+6. Sizing Tiers & Capital Allocation:
+   - Tier 1 (CONFIRMED_BULL_STAGE2 + High Conviction): allocation_pct = 0.09 to 0.12 (9%–12% NAV).
+   - Tier 2 (CHOPPY_RANGE / EARLY_RECOVERY_PIVOT / Nifty < 200-SMA + Decoupled RS Leader): allocation_pct = 0.05 to 0.06 (5%–6% NAV).
+   - Tier 3 (Low Conviction / Negative RS Alpha in Downtrend): action = "HOLD", allocation_pct = 0.0 (parked in 6.75% Liquid Fund).
 7. Tax & Treasury Awareness (Indian Union Budget Rules):
    - Liquid Fund Yield: Unallocated cash in risk-off market conditions automatically sweeps into 6.75% Liquid Mutual Funds. Holding liquid yield beats chasing low-conviction setups, but high-alpha decoupled leaders should be captured to beat the market.
    - Long-Term Compounding vs STCG Friction: Active positions approaching the 12-month boundary (>= 320 days) trigger 12.5% LTCG + ₹1.25L exemption if held, saving 7.5% in tax vs premature liquidation at 20% STCG.
